@@ -20,7 +20,7 @@ consumer.subscribe([kafka_topic])
 dbname = "DBlablaCar"
 user = "postgres"
 password = "postgres"
-host = "localhost"
+host = "postgres"
 port = "5432"
 
 # Crear una conexión

@@ -15,7 +15,13 @@ consumer = Consumer(config)
 topic = 'rutas'
 consumer.subscribe([topic])
 
-# Configurar la aplicación Streamlit
+
+
+
+###############################################################################
+#######################Configurar la aplicación Streamlit######################
+###############################################################################
+
 st.title("Datos de Kafka en Streamlit")
 
 # Loop para consumir y mostrar datos

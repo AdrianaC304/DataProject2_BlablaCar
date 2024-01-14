@@ -2,6 +2,25 @@ import json
 import xml.etree.ElementTree as ET
 from confluent_kafka import Producer
 import time
+import subprocess
+
+# Ejecutar el comando para crear el topic
+comando_creacion_topic = [
+    'docker-compose', 'exec', 'kafka',
+    'kafka-topics', '--create',
+    '--topic', 'rutas',
+    '--partitions', '1',
+    '--replication-factor', '1',
+    '--if-not-exists',
+    '--bootstrap-server', 'localhost:9092'
+]
+
+subprocess.run(comando_creacion_topic)
+
+
+# Retrasa la ejecucion del script 10 segundos
+time.sleep(10)
+
 
 class CoordinateProducer:
     def __init__(self, bootstrap_servers='localhost:9092'):

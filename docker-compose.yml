@@ -2,6 +2,27 @@
 version: '3.5'
 
 services:
+
+  postgres:
+    container_name: postgres
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: DBlablaCar
+    ports:
+      - "5432:5432"
+    #volumes:
+    #  - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  python_bbdd:
+    container_name: python_bbdd
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - postgres
+  
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
     environment:
@@ -61,3 +82,5 @@ services:
       - ksql-server
     entrypoint: /bin/sh
     tty: true
+
+  

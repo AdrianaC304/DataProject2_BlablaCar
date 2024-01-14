@@ -13,9 +13,8 @@ RUN pip install --no-cache-dir -r requirements.txt \
     && rm -rf /var/lib/apt/lists/*
 
 # Copiar los scripts
-##COPY fill_data_script2.py .
-#COPY scoring.py .
-#COPY autorechazo.py .
+COPY create_table.py .
+
 
 # Establecer el comando predeterminado
-#CMD ["bash", "-c", "python fill_data_script2.py && python autorechazo.py && python scoring.py "]
+CMD ["bash", "-c", "python create_table.py"]

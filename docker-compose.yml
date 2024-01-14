@@ -15,8 +15,8 @@ services:
     #volumes:
     #  - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
-  python_bbdd_last:
-    container_name: python
+  python_bbdd:
+    container_name: python_bbdd
     build:
       context: .
       dockerfile: Dockerfile

@@ -72,6 +72,7 @@ services:
       - "9000:9000"
     environment:
       JAVA_OPTS: "-Dplugins.dir=/opt/pinot/plugins -Xms1G -Xmx4G -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -Xloggc:gc-pinot-controller.log"
+      CONTROLLER_KAFKA_BROKER_LIST: "kafka:29092"  # Agrega esta línea
     depends_on:
       - zookeeper
 

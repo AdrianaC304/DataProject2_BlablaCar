@@ -1,0 +1,14 @@
+{
+    "configs": {
+      "controllerUri": "http://pinot-controller:9000",
+      "brokerUri": "http://pinot-broker:8099",
+      "zkStr": "zookeeper:2181",
+      "inputTopicName": "rutas",
+      "schemaFilePath": "/path/to/rutas-schema.json",
+      "offsetCommitThreshold": 1000,
+      "offsetCommitPeriodInSecs": 60,
+      "schemaRegistryRestUri": "http://schema-registry:8081",
+      "tableConfigFilePath": "/path/to/tableConfig/rutas-table-config.json"
+    }
+  }
+  

@@ -1,0 +1,12 @@
+{
+    "schemaName": "rutas",
+    "dimensionFieldSpecs": [
+      {"name": "ruta_id", "dataType": "STRING", "isSingleValueField": true},
+      {"name": "latitud", "dataType": "DOUBLE", "isSingleValueField": true},
+      {"name": "longitud", "dataType": "DOUBLE", "isSingleValueField": true}
+    ],
+    "metricFieldSpecs": [
+      {"name": "timestamp", "dataType": "LONG", "isSingleValueField": true}
+    ]
+  }
+  

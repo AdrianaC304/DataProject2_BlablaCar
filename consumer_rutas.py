@@ -7,7 +7,7 @@ import streamlit as st
 config = {
     'bootstrap.servers': 'localhost:9092',
     'group.id': 'python-consumer-group',
-    'auto.offset.reset': 'earliest'
+    'auto.offset.reset': 'latest'
 }
 
 # Crear el consumidor

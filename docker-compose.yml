@@ -1,15 +1,14 @@
-version: '3.7'
+---
+version: '3.5'
 
 services:
   zookeeper:
-    image: zookeeper:3.5.6
-    hostname: zookeeper
-    container_name: zookeeper
-    ports:
-      - "2181:2181"
+    image: confluentinc/cp-zookeeper:latest
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - 2181:2181
 
   kafka:
     image: confluentinc/cp-kafka:7.3.3
@@ -62,37 +61,3 @@ services:
       - ksql-server
     entrypoint: /bin/sh
     tty: true
-
-  pinot-controller:
-    image: apachepinot/pinot:0.11.0
-    command: "StartController -zkAddress zookeeper:2181"
-    container_name: "pinot-controller"
-    restart: unless-stopped
-    ports:
-      - "9000:9000"
-    environment:
-      JAVA_OPTS: "-Dplugins.dir=/opt/pinot/plugins -Xms1G -Xmx4G -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -Xloggc:gc-pinot-controller.log"
-    depends_on:
-      - zookeeper
-
-  pinot-broker:
-    image: apachepinot/pinot:0.11.0
-    command: "StartBroker -zkAddress zookeeper:2181"
-    restart: unless-stopped
-    container_name: "pinot-broker"
-    ports:
-      - "8099:8099"
-    environment:
-      JAVA_OPTS: "-Dplugins.dir=/opt/pinot/plugins -Xms4G -Xmx4G -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -Xloggc:gc-pinot-broker.log"
-    depends_on:
-      - pinot-controller
-
-  pinot-server:
-    image: apachepinot/pinot:0.11.0
-    command: "StartServer -zkAddress zookeeper:2181"
-    restart: unless-stopped
-    container_name: "pinot-server" 
-    environment:
-      JAVA_OPTS: "-Dplugins.dir=/opt/pinot/plugins -Xms4G -Xmx16G -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -Xloggc:gc-pinot-server.log"
-    depends_on:
-      - pinot-broker

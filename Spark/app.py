@@ -1,9 +1,9 @@
 
-#Copiar app al contenedor de docker
+#Copiar app al contenedor de docker. Reemplazar con ID del contenedor. 
 #docker cp -L app.py 338ac7177fa7:/opt/bitnami/spark/app.py
 
 
-#Ejecutar app dentro contenedor de docker(nodo Spark)
+#Ejecutar app dentro contenedor de docker(nodo Spark). Reemplazar con ID del contenedor. 
 #docker exec 338ac7177fa7 spark-submit --master spark://spark-master:7077 app.py
 
 

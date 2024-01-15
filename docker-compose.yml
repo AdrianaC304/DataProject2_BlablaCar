@@ -1,35 +1,15 @@
----
-version: '3.5'
+version: '3.7'
 
 services:
-
-  postgres:
-    container_name: postgres
-    image: postgres:latest
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: DBlablaCar
-    ports:
-      - "5432:5432"
-    #volumes:
-    #  - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-
-  python_bbdd:
-    container_name: python_bbdd
-    build:
-      context: .
-      dockerfile: Dockerfile
-    depends_on:
-      - postgres
-  
   zookeeper:
-    image: confluentinc/cp-zookeeper:latest
+    image: zookeeper:3.5.6
+    hostname: zookeeper
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
-    ports:
-      - 2181:2181
 
   kafka:
     image: confluentinc/cp-kafka:7.3.3
@@ -82,5 +62,3 @@ services:
       - ksql-server
     entrypoint: /bin/sh
     tty: true
-
-  

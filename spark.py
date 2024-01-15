@@ -1,3 +1,10 @@
+#pip install pyspark
+
+
+####################################################################
+####################  Leer un topic desde Kafka  ###################
+####################################################################
+
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import from_json
 from pyspark.sql.types import StructType, StructField, IntegerType, DoubleType

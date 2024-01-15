@@ -6,6 +6,7 @@
 #Ejecutar app dentro contenedor de docker(nodo Spark). Reemplazar con ID del contenedor. 
 #docker exec 338ac7177fa7 spark-submit --master spark://spark-master:7077 app.py
 
+#Se deberia ver un dataframe en la consola
 
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import rand

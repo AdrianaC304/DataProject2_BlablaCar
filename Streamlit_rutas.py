@@ -27,7 +27,7 @@ def main():
     map_height = 1200  # Altura del mapa en píxeles
 
     # Crear un mapa de Folium
-    map = folium.Map(location=center_coordinates, zoom_start=150 control_scale=True, width=map_width, height=map_height)
+    map = folium.Map(location=center_coordinates, zoom_start=15, control_scale=True, width=map_width, height=map_height)
 
 
     # Agregar puntos a la ruta

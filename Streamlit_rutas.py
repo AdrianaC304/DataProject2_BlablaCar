@@ -1,23 +1,34 @@
 import streamlit as st
 from streamlit_folium import folium_static
 import folium
+import json
+
+def read_coordinates_from_json(json_file):
+    with open(json_file, 'r') as file:
+        data = json.load(file)
+    coordinates = [(point['latitud'], point['longitud']) for point in data]
+    return coordinates
 
 def main():
-    # Título de la aplicación
+      # Título de la aplicación
     st.title("Mapa Interactivo")
 
-    # Coordenadas de los puntos de la ruta
-    coordinates = [
-        [39.4465493, -0.3688011],
-        [39.44811, -0.36404],
-        [39.44972, -0.36588],
-    ]
+    # Ruta al archivo JSON con las coordenadas
+    json_file_path = 'ruta_1_coordinates.json'
+
+    # Leer las coordenadas desde el archivo JSON
+    coordinates = read_coordinates_from_json(json_file_path)
 
     # Coordenadas del centro del mapa
     center_coordinates = coordinates[0]
 
+    # Configuración del tamaño del mapa
+    map_width = 2000  # Ancho del mapa en píxeles
+    map_height = 1200  # Altura del mapa en píxeles
+
     # Crear un mapa de Folium
-    map = folium.Map(location=center_coordinates, zoom_start=15)
+    map = folium.Map(location=center_coordinates, zoom_start=150 control_scale=True, width=map_width, height=map_height)
+
 
     # Agregar puntos a la ruta
     for coord in coordinates:

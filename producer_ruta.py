@@ -69,7 +69,7 @@ def convertir_a_json(coordinates):
     coordinates_json = []
     for index, coord_text in enumerate(coordinates, start=1):
         lat, lon, alt = [float(coord) for coord in coord_text.split(',')]
-        coordinates_json.append({'index': index, 'latitud': lat, 'longitud': lon})
+        coordinates_json.append({'index': index, 'latitud': lon, 'longitud': lat})
 
     return coordinates_json
 

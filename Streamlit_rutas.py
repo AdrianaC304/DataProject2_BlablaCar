@@ -14,7 +14,7 @@ def main():
     st.title("Mapa Interactivo")
 
     # Ruta al archivo JSON con las coordenadas
-    json_file_path = 'ruta_1_coordinates.json'
+    json_file_path = '/Users/adrianacamposnarvaez/Documents/GitHub/DataProject2_BlablaCar/Rutas/ruta_2_coordinates.json'
 
     # Leer las coordenadas desde el archivo JSON
     coordinates = read_coordinates_from_json(json_file_path)
@@ -27,7 +27,7 @@ def main():
     map_height = 1200  # Altura del mapa en píxeles
 
     # Crear un mapa de Folium
-    map = folium.Map(location=center_coordinates, zoom_start=15, control_scale=True, width=map_width, height=map_height)
+    map = folium.Map(location=center_coordinates, zoom_start=5, control_scale=True, width=map_width, height=map_height)
 
 
     # Agregar puntos a la ruta

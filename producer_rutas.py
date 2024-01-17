@@ -1,8 +1,10 @@
 import json
+import os
 import xml.etree.ElementTree as ET
 from confluent_kafka import Producer
 import time
 import subprocess
+import random 
 
 # Ejecutar el comando para crear el topic
 comando_creacion_topic = [
@@ -39,6 +41,9 @@ class CoordinateProducer:
 
     def send_coordinates(self, coordinates):
         for coord in coordinates:
+            # Agregar el campo 'tipo_vehiculo' con el valor fijo "coche"
+            coord['tipo_ruta'] = "coche"
+
             # Convertir el diccionario a formato JSON
             json_coord = json.dumps(coord)
 
@@ -46,12 +51,11 @@ class CoordinateProducer:
             self.producer.produce(self.topic_kafka, value=json_coord)
             self.producer.flush()
 
-            # Imprimir las coordenadas y el índice por consola
-            print(f"Index: {coord['index']}, {coord['latitud']}, {coord['longitud']}")
+            # Imprimir las coordenadas, el índice y el tipo de vehículo por consola
+            print(f"Index: {coord['index']}, {coord['latitud']}, {coord['longitud']}, {coord['tipo_ruta']}")
 
             # Esperar 1 segundo antes de enviar el siguiente
             time.sleep(1)
-
 
 
 
@@ -99,25 +103,33 @@ def guardar_json_en_archivo(coordinates_json, output_file='coordinates.json'):
 
 
 
+# ahora leemos todos los archivos dentro de la carpeta rutas:
+
 def main():
-    # Ruta al archivo KML
-    file_path = '/Users/adrianacamposnarvaez/Documents/GitHub/DataProject2_BlablaCar/Rutas/ruta_1.kml'
-   
+    # Ruta a la carpeta "rutas"
+    carpeta_rutas = '/Users/adrianacamposnarvaez/Documents/GitHub/DataProject2_BlablaCar/Coches'
 
-    # Cargar coordenadas desde el archivo KML
-    coordinates = cargar_coordenadas_desde_kml(file_path)
+    # Procesar archivos en la carpeta
+    for root, dirs, files in os.walk(carpeta_rutas):
+        for file_name in files:
+            if file_name.endswith('.kml'):
+                file_path = os.path.join(root, file_name)
 
-    # Convertir a formato JSON
-    coordinates_json = convertir_a_json(coordinates)
+                # Cargar coordenadas desde el archivo KML
+                coordinates = cargar_coordenadas_desde_kml(file_path)
 
-    # Guardar JSON en archivo
-    guardar_json_en_archivo(coordinates_json, '/Users/adrianacamposnarvaez/Documents/GitHub/DataProject2_BlablaCar/Rutas/ruta_1_coordinates.json')
-    
-    # Crear una instancia de la clase CoordinateProducer
-    coordinate_producer = CoordinateProducer()
+                # Convertir a formato JSON
+                coordinates_json = convertir_a_json(coordinates)
 
-    # Enviar coordenadas a través de Kafka
-    coordinate_producer.send_coordinates(coordinates_json)
+                # Guardar JSON en archivo
+                output_json_file = file_path[:-4] + '_coordinates.json'
+                guardar_json_en_archivo(coordinates_json, output_json_file)
+
+                # Crear una instancia de la clase CoordinateProducer
+                coordinate_producer = CoordinateProducer()
+
+                # Enviar coordenadas a través de Kafka
+                coordinate_producer.send_coordinates(coordinates_json)
 
 if __name__ == "__main__":
     main()

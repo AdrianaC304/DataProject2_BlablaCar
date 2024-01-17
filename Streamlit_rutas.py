@@ -14,7 +14,7 @@ def main():
     st.title("Mapa Interactivo")
 
     # Ruta al archivo JSON con las coordenadas
-    json_file_path = '/Users/adrianacamposnarvaez/Documents/GitHub/DataProject2_BlablaCar/Rutas/ruta_2_coordinates.json'
+    json_file_path = '/Users/adrianacamposnarvaez/Documents/GitHub/DataProject2_BlablaCar/Rut/Rut/Aeropuerto-Ángel Guimerá_coordinates.json'
 
     # Leer las coordenadas desde el archivo JSON
     coordinates = read_coordinates_from_json(json_file_path)

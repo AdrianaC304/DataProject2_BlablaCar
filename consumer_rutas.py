@@ -1,3 +1,7 @@
+### Consume datos del topic y los muestra por consola 
+
+
+
 from confluent_kafka import Consumer, KafkaError
 import json
 import streamlit as st

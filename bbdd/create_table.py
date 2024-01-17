@@ -25,10 +25,12 @@ cursor = conn.cursor()
 
 # Crear la tabla (ajusta esto según tus necesidades)
 cursor.execute('''
-    CREATE TABLE tu_tabla (
+    CREATE TABLE rutas (
         index INT,
         latitud VARCHAR(255),
-        longitud VARCHAR(255)
+        longitud VARCHAR(255),
+        tipo_ruta VARCHAR(255),
+        Origen_destino VARCHAR(255) 
     );
 ''')
 

@@ -39,10 +39,12 @@ class CoordinateProducer:
         self.producer = Producer(self.config)
         self.topic_kafka = 'rutas'
 
-    def send_coordinates(self, coordinates):
+    def send_coordinates(self, coordinates,nombre_ruta):
         for coord in coordinates:
             # Agregar el campo 'tipo_vehiculo' con el valor fijo "coche"
             coord['tipo_ruta'] = "coche"
+
+            coord['nombre_ruta'] = nombre_ruta
 
             # Convertir el diccionario a formato JSON
             json_coord = json.dumps(coord)
@@ -52,7 +54,7 @@ class CoordinateProducer:
             self.producer.flush()
 
             # Imprimir las coordenadas, el índice y el tipo de vehículo por consola
-            print(f"Index: {coord['index']}, {coord['latitud']}, {coord['longitud']}, {coord['tipo_ruta']}")
+            print(f"Index: {coord['index']}, {coord['latitud']}, {coord['longitud']}, {coord['tipo_ruta']}, {coord['nombre_ruta']}")
 
             # Esperar 1 segundo antes de enviar el siguiente
             time.sleep(1)
@@ -107,7 +109,7 @@ def guardar_json_en_archivo(coordinates_json, output_file='coordinates.json'):
 
 def main():
     # Ruta a la carpeta "rutas"
-    carpeta_rutas = '/Users/adrianacamposnarvaez/Documents/GitHub/DataProject2_BlablaCar/Coches'
+    carpeta_rutas = '/Users/adrianacamposnarvaez/Documents/GitHub/DataProject2_BlablaCar/Rutas/Coches'
 
     # Procesar archivos en la carpeta
     for root, dirs, files in os.walk(carpeta_rutas):
@@ -128,8 +130,10 @@ def main():
                 # Crear una instancia de la clase CoordinateProducer
                 coordinate_producer = CoordinateProducer()
 
+                # Obtener el nombre de la ruta desde el nombre del archivo
+                nombre_ruta = file_name[:-4]  # Elimina la extensión ".kml"
                 # Enviar coordenadas a través de Kafka
-                coordinate_producer.send_coordinates(coordinates_json)
+                coordinate_producer.send_coordinates(coordinates_json,nombre_ruta)
 
 if __name__ == "__main__":
     main()

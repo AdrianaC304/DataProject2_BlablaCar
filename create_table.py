@@ -28,7 +28,9 @@ cursor.execute('''
     CREATE TABLE tu_tabla (
         index INT,
         latitud VARCHAR(255),
-        longitud VARCHAR(255)
+        longitud VARCHAR(255),
+        tipo_ruta VARCHAR(255),
+        Origen_destino sVARCHAR(255) 
     );
 ''')
 

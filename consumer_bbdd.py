@@ -1,3 +1,6 @@
+### consume datos del toopic y los envia a una base de datos llamada DBlablaCar
+
+
 # consumer.py
 from confluent_kafka import Consumer, KafkaError
 import psycopg2
@@ -52,9 +55,11 @@ try:
             index = data.get('index')  
             latitud = data.get('latitud') 
             longitud = data.get('longitud')
+            tipo_ruta = data.get('latitud') 
+            Origen_destino = data.get('longitud')
 
             # Insertar en la tabla con dos columnas
-            cursor.execute("INSERT INTO tu_tabla (index,latitud, longitud) VALUES (%s, %s, %s);", (index, latitud,longitud))
+            cursor.execute("INSERT INTO tu_tabla (index,latitud, longitud) VALUES (%s, %s, %s);", (index, latitud,longitud,tipo_ruta,Origen_destino))
             conn.commit()
             print(f"Mensaje insertado en la base de datos: {data}")
 

@@ -5,6 +5,8 @@ from confluent_kafka import Producer
 import time
 import subprocess
 import random 
+from faker import Faker
+
 
 # Ejecutar el comando para crear el topic
 comando_creacion_topic = [

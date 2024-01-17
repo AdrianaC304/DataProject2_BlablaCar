@@ -1,4 +1,4 @@
-### consume datos del toopic y los envia a una base de datos llamada DBlablaCar
+### Consume datos del topic y los envia a una base de datos llamada DBlablaCar
 
 
 # consumer.py
@@ -55,11 +55,11 @@ try:
             index = data.get('index')  
             latitud = data.get('latitud') 
             longitud = data.get('longitud')
-            tipo_ruta = data.get('latitud') 
-            Origen_destino = data.get('longitud')
+            tipo_ruta = data.get('tipo_ruta') 
+            Origen_destino = data.get('nombre_ruta')
 
             # Insertar en la tabla con dos columnas
-            cursor.execute("INSERT INTO tu_tabla (index,latitud, longitud) VALUES (%s, %s, %s);", (index, latitud,longitud,tipo_ruta,Origen_destino))
+            cursor.execute("INSERT INTO rutas (index,latitud, longitud,tipo_ruta,Origen_destino) VALUES (%s, %s, %s, %s, %s);", (index, latitud,longitud,tipo_ruta,Origen_destino))
             conn.commit()
             print(f"Mensaje insertado en la base de datos: {data}")
 

@@ -6,6 +6,10 @@ import time
 from datetime import datetime
 import uuid
 
+
+
+
+
 # Clase para la publicación en Pub/Sub
 class PubSubProducer:
     def __init__(self, project_id, topic_name):
@@ -48,8 +52,8 @@ def convertir_a_json(coordinates, coche_id, ruta_nombre):
             'id_message': None,
             'coche_id': coche_id,
             'index_msg': index,
-            'latitud': lat,
-            'longitud': lon,
+            'latitud': lon,
+            'longitud': lat,
             'datetime': None, 
             'ruta': ruta_nombre
         })
@@ -58,7 +62,7 @@ def convertir_a_json(coordinates, coche_id, ruta_nombre):
 
 def main():
     # Directorio que contiene los archivos KML
-    directory_path = './rutas/coches/'
+    directory_path = './rutas/coches1/'
 
     # Obtener la lista de archivos KML en el directorio
     kml_files = [f for f in os.listdir(directory_path) if f.endswith('.kml')]
@@ -85,7 +89,7 @@ def main():
         coche_id_counter += 1
 
         # Crear una instancia de la clase PubSubProducer
-        pubsub_producer = PubSubProducer(project_id='dataflow-1-411618', topic_name='coches')
+        pubsub_producer = PubSubProducer(project_id='woven-justice-411714', topic_name='blablacar_DataProject2')
 
         # Enviar coordenadas a través de Pub/Sub
         for coord_message in coordinates_json:

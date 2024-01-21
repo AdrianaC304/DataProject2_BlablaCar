@@ -5,6 +5,12 @@ from apache_beam.io.gcp.internal.clients import bigquery
 import json
 from datetime import datetime
 
+
+
+######################################################################################################
+
+
+
 # Recibe datos
 def decode_message(msg):
     # Lógica para decodificar el mensaje y cargarlo como JSON
@@ -39,10 +45,10 @@ new_table_schema.fields.extend(new_table_fields)
 with beam.Pipeline(options=PipelineOptions(streaming=True)) as p:
     data = (
         p
-        | "LeerDesdePubSub" >> beam.io.ReadFromPubSub(subscription='projects/dataflow-1-411618/subscriptions/coches')
+        | "LeerDesdePubSub" >> beam.io.ReadFromPubSub(subscription='projects/woven-justice-411714/subscriptions/blablacar_DataProject2-sub')
         | "decodificar_msg" >> beam.ParDo(DecodeMessage())
         | "escribir" >> beam.io.WriteToBigQuery(
-            table="dataflow-1-411618:blablacar.coches",
+            table="woven-justice-411714:ejemplo.coches",
             schema=new_table_schema,
             create_disposition=beam.io.BigQueryDisposition.CREATE_NEVER,
             write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND

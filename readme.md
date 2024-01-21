@@ -1,13 +1,18 @@
-## Arquitectuta Data project 2
+# Arquitectuta Data project 2
 
-# Productor
+<p align="center">
+    <img src="imagenes/arquitectura.jpg" alt="Texto alternativo"/>
+</p>
 
-# PubSub
 
-# DF
+## 1. Productor
 
-# Big Query 
+## 2. PubSub
 
-# Streamlit
+## 3. DF
+
+## 4. Big Query 
+
+## 5. Streamlit
 
 

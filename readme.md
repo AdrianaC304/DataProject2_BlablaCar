@@ -1,7 +1,7 @@
 # Arquitectuta Data project 2
 
 <p align="center">
-    <img src="imagenes/arquitectura.jpg" alt="Texto alternativo"/>
+    <img src="/Users/adrianacamposnarvaez/Documents/GitHub/DataProject2_BlablaCar/imagenes/arquitectura.png" alt="Texto alternativo"/>
 </p>
 
 

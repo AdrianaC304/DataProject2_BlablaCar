@@ -43,16 +43,23 @@ new_table_fields = [
 new_table_schema.fields.extend(new_table_fields)
 
 with beam.Pipeline(options=PipelineOptions(streaming=True)) as p:
-    data = (
+    data_topic1 = (
         p
         | "LeerDesdePubSub" >> beam.io.ReadFromPubSub(subscription='projects/woven-justice-411714/subscriptions/blablacar_DataProject2-sub')
         | "decodificar_msg" >> beam.ParDo(DecodeMessage())
-        | "escribir" >> beam.io.WriteToBigQuery(
-            table="woven-justice-411714:ejemplo.coches",
-            schema=new_table_schema,
-            create_disposition=beam.io.BigQueryDisposition.CREATE_NEVER,
-            write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND
-        )
+    
+    )
+    data_topic2 = (
+        p
+        | "LeerDesdePubSub2" >> beam.io.ReadFromPubSub(subscription='projects/woven-justice-411714/subscriptions/blablacar_personas-sub')
+        | "decodificar_msg2" >> beam.ParDo(DecodeMessage())
+    
     )
 
+    merged_data = (data_topic1, data_topic2) | "MergeTopics" >> beam.Flatten()
 
+    # Realiza cualquier asignación adicional o transformación necesaria
+    transformed_data = (
+        merged_data
+        | "RealizarTransformacion" >> beam.Map(lambda element: print(element) or element)
+    )

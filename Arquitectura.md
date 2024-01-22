@@ -15,6 +15,12 @@ En esta imagen podemos ver tanto la arquitetcuta básica como la aplicada en Clo
 Queremos combinar la información de dos temas de Pub/Sub en un solo PCollection y realizar asignaciones específicas antes de escribir en BigQuery, lo hacemos usando las transformaciones de Apache Beam.
 
 
+
+
+Esta seria una estrategia de asignacion de viajes.
+<p align="center">
+    <img src="./imagenes/esquema.png" alt="Texto alternativo"/>
+
 ## 3. DF
 
 ## 4. Big Query 

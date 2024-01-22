@@ -1,3 +1,4 @@
 apache_beam
 streamlit
 folium
+streamlit_folium

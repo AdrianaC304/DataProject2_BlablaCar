@@ -1,3 +1,6 @@
+
+################################ Script para escribir en Big Query la información de los coches ####################################
+
 import apache_beam as beam
 from apache_beam.options.pipeline_options import PipelineOptions
 from apache_beam.io.gcp.bigquery import WriteToBigQuery

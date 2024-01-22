@@ -1,4 +1,6 @@
  
+################################ Script para escribir en Big Query la información de las personas ####################################
+
 import apache_beam as beam
 from apache_beam.options.pipeline_options import PipelineOptions
 from apache_beam.io.gcp.bigquery import WriteToBigQuery
@@ -57,10 +59,10 @@ def print_message(element):
 with beam.Pipeline(options=PipelineOptions(streaming=True)) as p:
 #personas:
     data_personas = (
-            p | "LeerDesdePubSub2" >> beam.io.ReadFromPubSub(subscription='projects/woven-justice-411714/subscriptions/blablacar_personas-sub')
+            p | "LeerDesdePubSub2" >> beam.io.ReadFromPubSub(subscription='projects/woven-justice-411714/subscriptions/blablacar_Personas-sub')
               #| "PrintMessage" >> beam.Map(print_message)
               | "decodificar_msg2" >> beam.ParDo(DecodeMessage())
-              | "KeyByPersonId" >> beam.Map(lambda person: (person['persona_id'], person))
+              | "KeyByPersonId" >> beam.Map(lambda person: (person['ruta'], person))
               | "WindowPersons" >> beam.WindowInto(beam.window.FixedWindows(10))  # Ajusta el tamaño de la ventana según sea necesario
         )
 

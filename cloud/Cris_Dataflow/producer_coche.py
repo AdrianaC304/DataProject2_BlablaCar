@@ -7,6 +7,19 @@ from datetime import datetime
 import uuid
 
 
+#################################################### Adriana ###################################################
+
+project_id = 'woven-justice-411714'
+topic_name= 'blablacar_DataProject2'
+
+################################################################################################################
+
+#################################################### Cris ######################################################
+
+#project_id = 'dataflow-1-411618'
+#topic_name= 'coches'
+
+################################################################################################################
 
 
 
@@ -89,7 +102,7 @@ def main():
         coche_id_counter += 1
 
         # Crear una instancia de la clase PubSubProducer
-        pubsub_producer = PubSubProducer(project_id='woven-justice-411714', topic_name='blablacar_DataProject2')
+        pubsub_producer = PubSubProducer(project_id=project_id, topic_name=topic_name)
 
         # Enviar coordenadas a través de Pub/Sub
         for coord_message in coordinates_json:

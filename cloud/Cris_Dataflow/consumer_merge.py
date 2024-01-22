@@ -16,7 +16,7 @@ def decode_message(msg):
     # Lógica para decodificar el mensaje y cargarlo como JSON
     output = msg.decode('utf-8')
     json_data = json.loads(output)
-    print(f"JSON guardado en BigQuery: {json_data}")
+    #print(f"JSON guardado en BigQuery: {json_data}")
     return json_data
 
 # Obtiene la hora actual en formato UTC
@@ -42,6 +42,15 @@ new_table_fields = [
 ]
 new_table_schema.fields.extend(new_table_fields)
 
+
+
+
+
+###################################################################################################################
+######################################### Transfromaciones ########################################################
+###################################################################################################################
+
+
 with beam.Pipeline(options=PipelineOptions(streaming=True)) as p:
     data_topic1 = (
         p
@@ -56,7 +65,14 @@ with beam.Pipeline(options=PipelineOptions(streaming=True)) as p:
     
     )
 
-    merged_data = (data_topic1, data_topic2) | "MergeTopics" >> beam.Flatten()
+ # Asigna el campo común como clave para ambas PCollections
+    keyed_data_topic1 = data_topic1 | "KeyByCampoComun1" >> beam.Map(lambda x: (x['campo_comun'], x))
+    keyed_data_topic2 = data_topic2 | "KeyByCampoComun2" >> beam.Map(lambda x: (x['campo_comun'], x))
+
+    # Utiliza CoGroupByKey para combinar los datos por el campo común
+    merged_data = ({'data_topic1': keyed_data_topic1, 'data_topic2': keyed_data_topic2}
+                   | "MergeTopics" >> beam.CoGroupByKey()
+                   | "Flatten" >> beam.Map(lambda element: element[1]))
 
     # Realiza cualquier asignación adicional o transformación necesaria
     transformed_data = (

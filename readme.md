@@ -11,7 +11,7 @@ En esta imagen podemos ver tanto la arquitetcuta básica como la aplicada en Clo
 ## 2. PubSub
 
 
-Queremos combinar la información de dos temas de Pub/Sub en un solo PCollection y realizar asignaciones específicas antes de escribir en BigQuery, plo hacemos usando las transformaciones de Apache Beam.
+Queremos combinar la información de dos temas de Pub/Sub en un solo PCollection y realizar asignaciones específicas antes de escribir en BigQuery, lo hacemos usando las transformaciones de Apache Beam.
 
 
 ## 3. DF

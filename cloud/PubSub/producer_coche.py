@@ -6,21 +6,13 @@ import time
 from datetime import datetime
 import uuid
 
-
 #################################################### Adriana ###################################################
-
-project_id = 'woven-justice-411714'
-topic_name= 'blablacar_coche'
-
-################################################################################################################
-
+#project_id = 'woven-justice-411714'
+#topic_name= 'blablacar_DataProject2'
 #################################################### Cris ######################################################
-
-#project_id = 'dataflow-1-411618'
-#topic_name= 'coches'
-
+project_id = 'dataflow-1-411618'
+topic_name= 'coches'
 ################################################################################################################
-
 
 
 # Clase para la publicación en Pub/Sub
@@ -78,7 +70,7 @@ def convertir_a_json(coordinates, coche_id, ruta_nombre):
 
 def main():
     # Directorio que contiene los archivos KML
-    directory_path = './rutas/coches1/'
+    directory_path = './rutas/personas/'
 
     # Obtener la lista de archivos KML en el directorio
     kml_files = [f for f in os.listdir(directory_path) if f.endswith('.kml')]

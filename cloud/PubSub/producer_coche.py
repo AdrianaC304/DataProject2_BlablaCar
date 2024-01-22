@@ -10,7 +10,7 @@ import uuid
 #################################################### Adriana ###################################################
 
 project_id = 'woven-justice-411714'
-topic_name= 'blablacar_DataProject2'
+topic_name= 'blablacar_coche'
 
 ################################################################################################################
 
@@ -73,6 +73,9 @@ def convertir_a_json(coordinates, coche_id, ruta_nombre):
 
     return coordinates_json
 
+
+######### como hay muchas coordenadas y en Streamlit no queda bien vamos a envair las coordenadas pares 
+
 def main():
     # Directorio que contiene los archivos KML
     directory_path = './rutas/coches1/'
@@ -104,14 +107,15 @@ def main():
         # Crear una instancia de la clase PubSubProducer
         pubsub_producer = PubSubProducer(project_id=project_id, topic_name=topic_name)
 
-        # Enviar coordenadas a través de Pub/Sub
-        for coord_message in coordinates_json:
-            pubsub_producer.publish_message(coord_message)
-            time.sleep(1)  # Esperar 1 segundo entre mensajes
+        # Enviar coordenadas a través de Pub/Sub, seleccionando cada segunda coordenada
+        for index, coord_message in enumerate(coordinates_json):
+            if index % 2 == 0:
+                pubsub_producer.publish_message(coord_message)
+                time.sleep(1)  # Esperar 1 segundo entre mensajes
 
-        print(f"Coordenadas de {kml_file} han sido enviadas a Pub/Sub con ID de coche {coche_id_counter - 1}.")
+        print(f"Coordenadas alternas de {kml_file} han sido enviadas a Pub/Sub con ID de coche {coche_id_counter - 1}.")
 
-    print("Todos los archivos KML han sido procesados y los mensajes han sido enviados a Pub/Sub.")
+    print("Todos los archivos KML han sido procesados y los mensajes alternos han sido enviados a Pub/Sub.")
 
 if __name__ == "__main__":
     main()

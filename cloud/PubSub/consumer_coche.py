@@ -53,7 +53,7 @@ with beam.Pipeline(options=PipelineOptions(streaming=True)) as p:
     #coches:
     data = (
         p
-        | "LeerDesdePubSub" >> beam.io.ReadFromPubSub(subscription='projects/woven-justice-411714/subscriptions/blablacar_DataProject2-sub')
+        | "LeerDesdePubSub" >> beam.io.ReadFromPubSub(subscription='projects/woven-justice-411714/subscriptions/blablacar_coche-sub')
         | "decodificar_msg" >> beam.ParDo(DecodeMessage())
         | "escribir" >> beam.io.WriteToBigQuery(
             table="woven-justice-411714:ejemplo.coches",

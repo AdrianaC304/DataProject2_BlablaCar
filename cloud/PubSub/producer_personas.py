@@ -6,24 +6,23 @@ import time
 from datetime import datetime
 import uuid
 
-
 #################################################### Adriana ###################################################
 
 project_id = 'woven-justice-411714'
-topic_name= 'blablacar_DataProject2'
+topic_name= 'blablacar_persona'
 
 ################################################################################################################
 
 #################################################### Cris ######################################################
 
-#project_id = 'dataflow-1-411618'
-#topic_name= 'coches'
+
 
 ################################################################################################################
 
 
 
-# Clase para la publicación en Pub/Sub
+
+# Clase para la publicación en Pub/Sub 
 class PubSubProducer:
     def __init__(self, project_id, topic_name):
         self.project_id = project_id
@@ -58,24 +57,43 @@ def cargar_coordenadas_desde_kml(file_path):
 
 # Función para convertir coordenadas a formato JSON con campos adicionales
 def convertir_a_json(coordinates, coche_id, ruta_nombre):
-    coordinates_json = []
-    for index, coord_text in enumerate(coordinates, start=1):
-        lat, lon, alt = [float(coord) for coord in coord_text.split(',')]
-        coordinates_json.append({
-            'id_message': None,
-            'coche_id': coche_id,
-            'index_msg': index,
-            'latitud': lon,
-            'longitud': lat,
-            'datetime': None, 
-            'ruta': ruta_nombre
-        })
+    if len(coordinates) < 2:
+        print(f"No hay suficientes coordenadas para {ruta_nombre}. Ignorando este archivo.")
+        return []
 
-    return coordinates_json
+    first_coord_text = coordinates[0]
+    last_coord_text = coordinates[-1]
+
+    first_lat, first_lon, _ = [float(coord) for coord in first_coord_text.split(',')]
+    last_lat, last_lon, _ = [float(coord) for coord in last_coord_text.split(',')]
+
+    json_data = [
+        {
+            'id_message': None,
+            'persona_id': coche_id,
+            'index_msg': 1,
+            'latitud': first_lon,
+            'longitud': first_lat,
+            'datetime': None,
+            'ruta': ruta_nombre
+        },
+        {
+            'id_message': None,
+            'persona_id': coche_id,
+            'index_msg': 2,
+            'latitud': last_lon,
+            'longitud': last_lat,
+            'datetime': None,
+            'ruta': ruta_nombre
+        }
+    ]
+
+    return json_data
+
 
 def main():
     # Directorio que contiene los archivos KML
-    directory_path = './rutas/coches1/'
+    directory_path = './rutas/personas1/'
 
     # Obtener la lista de archivos KML en el directorio
     kml_files = [f for f in os.listdir(directory_path) if f.endswith('.kml')]
@@ -102,6 +120,7 @@ def main():
         coche_id_counter += 1
 
         # Crear una instancia de la clase PubSubProducer
+        #aqui llama  a las variables del principio cada uno pone las suyas
         pubsub_producer = PubSubProducer(project_id=project_id, topic_name=topic_name)
 
         # Enviar coordenadas a través de Pub/Sub
@@ -115,3 +134,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+ 

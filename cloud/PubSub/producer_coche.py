@@ -6,19 +6,20 @@ import time
 from datetime import datetime
 import uuid
 
+
 #################################################### Adriana ###################################################
 
 project_id = 'woven-justice-411714'
-topic_name= 'blablacar_personas'
+topic_name= 'blablacar_coche'
 
 ################################################################################################################
 
 #################################################### Cris ######################################################
 
-
+#project_id = 'dataflow-1-411618'
+#topic_name= 'coches'
 
 ################################################################################################################
-
 
 
 
@@ -62,7 +63,7 @@ def convertir_a_json(coordinates, coche_id, ruta_nombre):
         lat, lon, alt = [float(coord) for coord in coord_text.split(',')]
         coordinates_json.append({
             'id_message': None,
-            'persona_id': coche_id,
+            'coche_id': coche_id,
             'index_msg': index,
             'latitud': lon,
             'longitud': lat,
@@ -72,9 +73,12 @@ def convertir_a_json(coordinates, coche_id, ruta_nombre):
 
     return coordinates_json
 
+
+######### como hay muchas coordenadas y en Streamlit no queda bien vamos a envair las coordenadas pares 
+
 def main():
     # Directorio que contiene los archivos KML
-    directory_path = './rutas/personas1/'
+    directory_path = './rutas/coches1/'
 
     # Obtener la lista de archivos KML en el directorio
     kml_files = [f for f in os.listdir(directory_path) if f.endswith('.kml')]
@@ -101,18 +105,17 @@ def main():
         coche_id_counter += 1
 
         # Crear una instancia de la clase PubSubProducer
-        #aqui llama  a las variables del principio cada uno pone las suyas
         pubsub_producer = PubSubProducer(project_id=project_id, topic_name=topic_name)
 
-        # Enviar coordenadas a través de Pub/Sub
-        for coord_message in coordinates_json:
-            pubsub_producer.publish_message(coord_message)
-            time.sleep(1)  # Esperar 1 segundo entre mensajes
+        # Enviar coordenadas a través de Pub/Sub, seleccionando cada segunda coordenada
+        for index, coord_message in enumerate(coordinates_json):
+            if index % 2 == 0:
+                pubsub_producer.publish_message(coord_message)
+                time.sleep(1)  # Esperar 1 segundo entre mensajes
 
-        print(f"Coordenadas de {kml_file} han sido enviadas a Pub/Sub con ID de coche {coche_id_counter - 1}.")
+        print(f"Coordenadas alternas de {kml_file} han sido enviadas a Pub/Sub con ID de coche {coche_id_counter - 1}.")
 
-    print("Todos los archivos KML han sido procesados y los mensajes han sido enviados a Pub/Sub.")
+    print("Todos los archivos KML han sido procesados y los mensajes alternos han sido enviados a Pub/Sub.")
 
 if __name__ == "__main__":
     main()
- 

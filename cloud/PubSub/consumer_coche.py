@@ -1,3 +1,6 @@
+
+################################ Script para escribir en Big Query la información de los coches ####################################
+
 import apache_beam as beam
 from apache_beam.options.pipeline_options import PipelineOptions
 from apache_beam.io.gcp.bigquery import WriteToBigQuery
@@ -50,7 +53,7 @@ with beam.Pipeline(options=PipelineOptions(streaming=True)) as p:
     #coches:
     data = (
         p
-        | "LeerDesdePubSub" >> beam.io.ReadFromPubSub(subscription='projects/woven-justice-411714/subscriptions/blablacar_DataProject2-sub')
+        | "LeerDesdePubSub" >> beam.io.ReadFromPubSub(subscription='projects/woven-justice-411714/subscriptions/blablacar_coche-sub')
         | "decodificar_msg" >> beam.ParDo(DecodeMessage())
         | "escribir" >> beam.io.WriteToBigQuery(
             table="woven-justice-411714:ejemplo.coches",

@@ -47,35 +47,52 @@ new_table_schema.fields.extend(new_table_fields)
 
 
 ###################################################################################################################
-######################################### Transfromaciones ########################################################
+######################################### Transformaciones ########################################################
 ###################################################################################################################
 
 
 with beam.Pipeline(options=PipelineOptions(streaming=True)) as p:
+    
+    ## Escribir en big Query los datos de los conductores
     data_topic1 = (
         p
         | "LeerDesdePubSub" >> beam.io.ReadFromPubSub(subscription='projects/woven-justice-411714/subscriptions/blablacar_DataProject2-sub')
         | "decodificar_msg" >> beam.ParDo(DecodeMessage())
-    
+        | "escribir" >> beam.io.WriteToBigQuery(
+            table="woven-justice-411714:ejemplo.coches",
+            schema=new_table_schema,
+            create_disposition=beam.io.BigQueryDisposition.CREATE_NEVER,
+            write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND
+        )
     )
+
+    ## Escribir en big Query los datos de las personas
+
     data_topic2 = (
         p
         | "LeerDesdePubSub2" >> beam.io.ReadFromPubSub(subscription='projects/woven-justice-411714/subscriptions/blablacar_personas-sub')
         | "decodificar_msg2" >> beam.ParDo(DecodeMessage())
+        | "escribir2" >> beam.io.WriteToBigQuery(
+            table="woven-justice-411714:ejemplo.personas",
+            schema=new_table_schema,
+            create_disposition=beam.io.BigQueryDisposition.CREATE_NEVER,
+            write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND
+        )
     
     )
 
- # Asigna el campo común como clave para ambas PCollections
-    keyed_data_topic1 = data_topic1 | "KeyByCampoComun1" >> beam.Map(lambda x: (x['campo_comun'], x))
-    keyed_data_topic2 = data_topic2 | "KeyByCampoComun2" >> beam.Map(lambda x: (x['campo_comun'], x))
+
+    # Asigna el campo común como clave para ambas PCollections
+    #keyed_data_topic1 = data_topic1 | "longitud" >> beam.Map(lambda x: (x['campo_comun'], x))
+    #keyed_data_topic2 = data_topic2 | "longitud" >> beam.Map(lambda x: (x['campo_comun'], x))
 
     # Utiliza CoGroupByKey para combinar los datos por el campo común
-    merged_data = ({'data_topic1': keyed_data_topic1, 'data_topic2': keyed_data_topic2}
-                   | "MergeTopics" >> beam.CoGroupByKey()
-                   | "Flatten" >> beam.Map(lambda element: element[1]))
+    #merged_data = ({'data_topic1': keyed_data_topic1, 'data_topic2': keyed_data_topic2}
+                 #  | "MergeTopics" >> beam.CoGroupByKey()
+                  # | "Flatten" >> beam.Map(lambda element: element[1]))
 
     # Realiza cualquier asignación adicional o transformación necesaria
-    transformed_data = (
-        merged_data
-        | "RealizarTransformacion" >> beam.Map(lambda element: print(element) or element)
-    )
+    #transformed_data = (
+      #  merged_data
+      #  | "RealizarTransformacion" >> beam.Map(lambda element: print(element) or element)
+    #)

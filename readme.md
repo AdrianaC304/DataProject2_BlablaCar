@@ -8,6 +8,7 @@ En esta imagen podemos ver tanto la arquitetcuta básica como la aplicada en Clo
 
 ## 1. Productor
 
+
 ## 2. PubSub
 
 
@@ -19,5 +20,9 @@ Queremos combinar la información de dos temas de Pub/Sub en un solo PCollection
 ## 4. Big Query 
 
 ## 5. Streamlit
+
+## 6. Tableau
+
+otra opcion que nos planteamos para visualizar los datos fue Grafana pero debido al coste y nuestra poca expeirencia decidimos usar Tableau.
 
 

@@ -41,42 +41,16 @@ new_table_fields_personas = [
 ]
 new_table_schema_personas.fields.extend(new_table_fields_personas)
 
-
-class FilterMinMaxIndex(beam.DoFn):
-    def process(self, element):
-        _, data = element
-        min_index = min(data, key=lambda x: x['index_msg'])
-        print(min_index)
-        max_index = max(data, key=lambda x: x['index_msg'])
-        print(max_index)
-        return [min_index, max_index]
-    
-
-def print_message(element):
-    print(element)
-    return element
-
 with beam.Pipeline(options=PipelineOptions(streaming=True)) as p:
-#personas:
-    data_personas = (
-            p | "LeerDesdePubSub2" >> beam.io.ReadFromPubSub(subscription='projects/woven-justice-411714/subscriptions/blablacar_Personas-sub')
-              #| "PrintMessage" >> beam.Map(print_message)
-              | "decodificar_msg2" >> beam.ParDo(DecodeMessage())
-              | "KeyByPersonId" >> beam.Map(lambda person: (person['ruta'], person))
-              | "WindowPersons" >> beam.WindowInto(beam.window.FixedWindows(10))  # Ajusta el tamaño de la ventana según sea necesario
-        )
-
-        # Agrupar datos por ID
-    grouped_data = (
-            data_personas
-            | "GroupByKey" >> beam.GroupByKey()
-            | "FilterMinMaxIndex" >> beam.ParDo(FilterMinMaxIndex())
-        )
-
-        # Escribir en BigQuery
-    grouped_data | "WriteToBigQuery" >> beam.io.WriteToBigQuery(
+    #coches:
+    data = (
+        p
+        | "LeerDesdePubSub2" >> beam.io.ReadFromPubSub(subscription='projects/woven-justice-411714/subscriptions/blablacar_persona-sub')
+        | "decodificar_msg2" >> beam.ParDo(DecodeMessage())
+        | "escribir2" >> beam.io.WriteToBigQuery(
             table="woven-justice-411714:ejemplo.personas",
             schema=new_table_schema_personas,
             create_disposition=beam.io.BigQueryDisposition.CREATE_NEVER,
             write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND
         )
+    )

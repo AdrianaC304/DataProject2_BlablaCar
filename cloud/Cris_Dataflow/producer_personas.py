@@ -62,7 +62,7 @@ def convertir_a_json(coordinates, coche_id, ruta_nombre):
         lat, lon, alt = [float(coord) for coord in coord_text.split(',')]
         coordinates_json.append({
             'id_message': None,
-            'coche_id': coche_id,
+            'personas_id': coche_id,
             'index_msg': index,
             'latitud': lon,
             'longitud': lat,

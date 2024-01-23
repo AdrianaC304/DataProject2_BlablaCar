@@ -6,7 +6,7 @@ from google.cloud import bigquery
 import random
 
 #################################################### Adriana ###################################################
-#roject_id = 'woven-justice-411714'
+#project_id = 'woven-justice-411714'
 #topic_name= 'blablacar_DataProject2'
 #################################################### Cris ######################################################
 project_id = 'dataflow-1-411618'

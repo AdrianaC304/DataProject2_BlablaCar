@@ -14,12 +14,15 @@ from datetime import datetime
 #table_name = "woven-justice-411714:ejemplo.coches"
 #suscripcion ='projects/woven-justice-411714/subscriptions/blablacar_DataProject2-sub'
 #################################################### Cris ######################################################
-project_id = 'dataflow-1-411618'
-topic_name= 'coches'
-table_name = 'dataflow-1-411618:blablacar.rutas'
-suscripcion = 'projects/dataflow-1-411618/subscriptions/coches'
+#project_id = 'dataflow-1-411618'
+#topic_name= 'coches'
+#table_name = 'dataflow-1-411618:blablacar.rutas'
+#suscripcion = 'projects/dataflow-1-411618/subscriptions/coches'
 ################################################################################################################
-
+project_id = 'blablacar-412022'
+topic_name= 'coches'
+table_name = 'blablacar-412022.dataset.coches'
+suscripcion = 'projects/blablacar-412022/subscriptions/coches-sub'
 
 
 # Recibe datos

@@ -8,10 +8,21 @@ from apache_beam.io.gcp.internal.clients import bigquery
 import json
 from datetime import datetime
 
-
-
-######################################################################################################
-
+#################################################### Adriana ###################################################
+#project_id = 'woven-justice-411714'
+#topic_name= 'blablacar_DataProject2'
+#table_name = "woven-justice-411714:ejemplo.coches"
+#suscripcion ='projects/woven-justice-411714/subscriptions/blablacar_DataProject2-sub'
+#################################################### Cris ######################################################
+#project_id = 'dataflow-1-411618'
+#topic_name= 'coches'
+#table_name = 'dataflow-1-411618:blablacar.rutas'
+#suscripcion = 'projects/dataflow-1-411618/subscriptions/coches'
+################################################################################################################
+project_id = 'blablacar-412022'
+topic_name= 'coches'
+table_name = 'blablacar-412022.dataset.coches'
+suscripcion = 'projects/blablacar-412022/subscriptions/coches-sub'
 
 
 # Recibe datos
@@ -53,10 +64,10 @@ with beam.Pipeline(options=PipelineOptions(streaming=True)) as p:
     #coches:
     data = (
         p
-        | "LeerDesdePubSub" >> beam.io.ReadFromPubSub(subscription='projects/woven-justice-411714/subscriptions/blablacar_coche-sub')
+        | "LeerDesdePubSub" >> beam.io.ReadFromPubSub(subscription=suscripcion)
         | "decodificar_msg" >> beam.ParDo(DecodeMessage())
         | "escribir" >> beam.io.WriteToBigQuery(
-            table="woven-justice-411714:ejemplo.coches",
+            table= table_name,
             schema=new_table_schema,
             create_disposition=beam.io.BigQueryDisposition.CREATE_NEVER,
             write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND

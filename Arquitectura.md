@@ -1,5 +1,13 @@
 # Arquitectuta Data project 2
 
+
+Esta seria una estrategia de asignacion de viajes.
+<p align="center">
+    <img src="./imagenes/esquema.png" alt="Texto alternativo"/>
+
+
+
+
 En esta imagen podemos ver tanto la arquitetcuta básica como la aplicada en Cloud.
 <p align="center">
     <img src="./imagenes/arquitectura.png" alt="Texto alternativo"/>
@@ -16,10 +24,6 @@ Queremos combinar la información de dos temas de Pub/Sub en un solo PCollection
 
 
 
-
-Esta seria una estrategia de asignacion de viajes.
-<p align="center">
-    <img src="./imagenes/esquema.png" alt="Texto alternativo"/>
 
 ## 3. DF
 

@@ -11,7 +11,7 @@ import uuid
 #topic_name= 'blablacar_coche'
 #################################################### Cris ######################################################
 project_id = 'dataflow-1-411618'
-topic_name= 'coches'
+topic_name= 'coches_stream'
 ###################################################   Jesús   ###################################################
 #project_id = 'blablacar-412022'
 #topic_name = 'coches'
@@ -74,7 +74,7 @@ def convertir_a_json(coordinates, coche_id, ruta_nombre):
 
 def main():
     # Directorio que contiene los archivos KML
-    directory_path = './rutas/personas/'
+    directory_path = './rutas/personas1/'
 
     # Obtener la lista de archivos KML en el directorio
     kml_files = [f for f in os.listdir(directory_path) if f.endswith('.kml')]
@@ -106,7 +106,7 @@ def main():
         # Enviar coordenadas a través de Pub/Sub, seleccionando cada segunda coordenada
         for coord_message in enumerate(coordinates_json):
             pubsub_producer.publish_message(coord_message)
-            time.sleep(1)  # Esperar 1 segundo entre mensajes
+            time.sleep(5)  # Esperar 1 segundo entre mensajes
 
         print(f"Coordenadas alternas de {kml_file} han sido enviadas a Pub/Sub con ID de coche {coche_id_counter - 1}.")
 

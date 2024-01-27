@@ -35,7 +35,7 @@ class PubSubProducer:
         
         data = json.dumps(message).encode("utf-8")
         future = self.publisher.publish(self.topic_path, data)
-        print(f"Publicado en Pub/Sub: {message}")
+        print(f"Coche_Publicado en Pub/Sub: {message}")
         return future
 
 # Función para cargar coordenadas desde un archivo KML
@@ -58,13 +58,14 @@ def convertir_a_json(coordinates, coche_id, ruta_nombre):
     for index, coord_text in enumerate(coordinates, start=1):
         lat, lon, alt = [float(coord) for coord in coord_text.split(',')]
         coordinates_json.append({
-            'id_message': None,
+            'coche_id_message': None,
             'coche_id': coche_id,
-            'index_msg': index,
-            'latitud': lon,
-            'longitud': lat,
-            'datetime': None, 
-            'ruta': ruta_nombre
+            'cocher_index_msg': index,
+            'cocher_geo': f"{lon}{lat}",
+            'cocher_latitud': lon,
+            'coche_longitud': lat,
+            'coche_datetime': None, 
+            'coche_ruta': ruta_nombre
         })
 
     return coordinates_json
@@ -74,7 +75,7 @@ def convertir_a_json(coordinates, coche_id, ruta_nombre):
 
 def main():
     # Directorio que contiene los archivos KML
-    directory_path = './rutas/personas/'
+    directory_path = './rutas/personas1/'
 
     # Obtener la lista de archivos KML en el directorio
     kml_files = [f for f in os.listdir(directory_path) if f.endswith('.kml')]

@@ -11,12 +11,11 @@ import uuid
 #topic_name= 'blablacar_coche'
 #################################################### Cris ######################################################
 project_id = 'dataflow-1-411618'
-topic_name= 'coches_stream'
+topic_name= 'usuarios_stream'
 ###################################################   Jesús   ###################################################
 #project_id = 'blablacar-412022'
 #topic_name = 'coches'
 ###############################################################################################################
-
 
 
 # Clase para la publicación en Pub/Sub
@@ -35,7 +34,7 @@ class PubSubProducer:
         
         data = json.dumps(message).encode("utf-8")
         future = self.publisher.publish(self.topic_path, data)
-        print(f"Publicado en Pub/Sub: {message}")
+        print(f"Usuario_Publicado en Pub/Sub: {message}")
         return future
 
 # Función para cargar coordenadas desde un archivo KML
@@ -53,26 +52,34 @@ def cargar_coordenadas_desde_kml(file_path):
     return coordinates
 
 # Función para convertir coordenadas a formato JSON con campos adicionales
-def convertir_a_json(coordinates, coche_id, ruta_nombre):
-    coordinates_json = []
-    for index, coord_text in enumerate(coordinates, start=1):
-        lat, lon, alt = [float(coord) for coord in coord_text.split(',')]
-        coordinates_json.append({
-            'id_message': None,
-            'coche_id': coche_id,
-            'index_msg': index,
-            'latitud': lon,
-            'longitud': lat,
-            'datetime': None, 
-            'ruta': ruta_nombre
-        })
+def convertir_a_json(coordinates, user_id, ruta_nombre):
+    # Tomar solo la primera y la última coordenada
+    first_coord_text = coordinates[0]
+    last_coord_text = coordinates[-1]
 
-    return coordinates_json
+    # Convertir las coordenadas a formato JSON con campos adicionales
+    first_lat, first_lon, first_alt = [float(coord) for coord in first_coord_text.split(',')]
+    last_lat, last_lon, last_alt = [float(coord) for coord in last_coord_text.split(',')]
 
+    json_data = {
+        'user_id_message': None,
+        'user_id': user_id,
+        'user_datetime': None,
+        'user_geo_incio': f"{first_lon}{first_lat}",
+        'user_geo_fin': f"{first_lon}{first_lat}",
+        'user_latitud_inicio': first_lon,
+        'user_longitud_inicio': first_lat,
+        'user_latitud_destino': last_lon,
+        'user_longitud_destino': last_lat
+    }
 
-######### como hay muchas coordenadas y en Streamlit no queda bien vamos a envair las coordenadas pares 
+    return json_data
 
+# Función principal
 def main():
+    project_id = 'dataflow-1-411618'
+    topic_name = 'usuarios_stream'
+
     # Directorio que contiene los archivos KML
     directory_path = './rutas/personas1/'
 
@@ -84,8 +91,8 @@ def main():
         print("No se encontraron archivos KML en el directorio.")
         return
 
-    # Inicializar el contador de coches
-    coche_id_counter = 1
+    # Inicializar el id_usuarios
+    user_id_counter = 9990
 
     # Iterar sobre cada archivo KML
     for kml_file in kml_files:
@@ -95,22 +102,21 @@ def main():
         coordinates = cargar_coordenadas_desde_kml(file_path)
 
         # Convertir a formato JSON con campos adicionales
-        coordinates_json = convertir_a_json(coordinates, coche_id_counter, kml_file)
+        coordinates_json = convertir_a_json(coordinates, user_id_counter, kml_file)
 
         # Incrementar el contador de coches para el próximo archivo
-        coche_id_counter += 1
+        user_id_counter += 1
 
         # Crear una instancia de la clase PubSubProducer
         pubsub_producer = PubSubProducer(project_id=project_id, topic_name=topic_name)
 
-        # Enviar coordenadas a través de Pub/Sub, seleccionando cada segunda coordenada
-        for coord_message in enumerate(coordinates_json):
-            pubsub_producer.publish_message(coord_message)
-            time.sleep(5)  # Esperar 1 segundo entre mensajes
+        # Enviar el JSON a través de Pub/Sub
+        pubsub_producer.publish_message(coordinates_json)
+        time.sleep(5)  # Esperar 5 segundos antes de procesar el siguiente archivo
 
-        print(f"Coordenadas alternas de {kml_file} han sido enviadas a Pub/Sub con ID de coche {coche_id_counter - 1}.")
+        print(f"JSON con la primera y última geolocalización de {kml_file} enviado a Pub/Sub.")
 
-    print("Todos los archivos KML han sido procesados y los mensajes alternos han sido enviados a Pub/Sub.")
+    print("Todos los archivos KML han sido procesados y los JSON han sido enviados a Pub/Sub.")
 
 if __name__ == "__main__":
     main()

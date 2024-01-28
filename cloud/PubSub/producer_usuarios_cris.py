@@ -28,9 +28,9 @@ class PubSubProducer:
 
     def publish_message(self, message):
         # Agregar el campo 'datetime' al mensaje JSON
-        message['datetime'] = datetime.utcnow().isoformat()
+        message['datetime'] = datetime.utcnow().isoformat() + 'Z'
         # Agregar el campo 'id_message' como un identificador único alfanumérico
-        message['id_message'] = str(uuid.uuid4())
+        message['user_id_message'] = str(uuid.uuid4())
         
         data = json.dumps(message).encode("utf-8")
         future = self.publisher.publish(self.topic_path, data)
@@ -64,9 +64,9 @@ def convertir_a_json(coordinates, user_id, ruta_nombre):
     json_data = {
         'user_id_message': None,
         'user_id': user_id,
-        'user_datetime': None,
-        'user_geo_incio': f"{first_lon}{first_lat}",
-        'user_geo_fin': f"{first_lon}{first_lat}",
+        'datetime': None,
+        'geo': f"{first_lon}{first_lat}",
+        'user_geo_fin': f"{last_lon}{last_lat}",
         'user_latitud_inicio': first_lon,
         'user_longitud_inicio': first_lat,
         'user_latitud_destino': last_lon,

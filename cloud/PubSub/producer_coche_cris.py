@@ -29,9 +29,9 @@ class PubSubProducer:
 
     def publish_message(self, message):
         # Agregar el campo 'datetime' al mensaje JSON
-        message['datetime'] = datetime.utcnow().isoformat()
+        message['datetime'] = datetime.utcnow().isoformat() + 'Z'
         # Agregar el campo 'id_message' como un identificador único alfanumérico
-        message['id_message'] = str(uuid.uuid4())
+        message['coche_id_message'] = str(uuid.uuid4())
         
         data = json.dumps(message).encode("utf-8")
         future = self.publisher.publish(self.topic_path, data)
@@ -60,11 +60,11 @@ def convertir_a_json(coordinates, coche_id, ruta_nombre):
         coordinates_json.append({
             'coche_id_message': None,
             'coche_id': coche_id,
-            'cocher_index_msg': index,
-            'cocher_geo': f"{lon}{lat}",
-            'cocher_latitud': lon,
+            'coche_index_msg': index,
+            'geo': f"{lon}{lat}",
+            'coche_latitud': lon,
             'coche_longitud': lat,
-            'coche_datetime': None, 
+            'datetime': None, 
             'coche_ruta': ruta_nombre
         })
 
@@ -75,7 +75,7 @@ def convertir_a_json(coordinates, coche_id, ruta_nombre):
 
 def main():
     # Directorio que contiene los archivos KML
-    directory_path = './rutas/personas1/'
+    directory_path = './rutas/coches1/'
 
     # Obtener la lista de archivos KML en el directorio
     kml_files = [f for f in os.listdir(directory_path) if f.endswith('.kml')]

@@ -19,11 +19,16 @@ from datetime import datetime
 #table_name = 'dataflow-1-411618:blablacar.rutas'
 #suscripcion = 'projects/dataflow-1-411618/subscriptions/coches'
 ################################################################################################################
-project_id = 'blablacar-412022'
-topic_name= 'coches'
-table_name = 'blablacar-412022.dataset.coches'
-suscripcion = 'projects/blablacar-412022/subscriptions/coches-sub'
+#project_id = 'blablacar-412022'
+#topic_name= 'coches'
+#table_name = 'blablacar-412022.dataset.coches'
+#suscripcion = 'projects/blablacar-412022/subscriptions/coches-sub'
 
+################################### Mar######################################################
+project_id = 'blablacar-412417'
+topic_name = 'blablacar'
+table_name = 'blablacar-412417.blaablacar_database.tabla_blablacar'
+suscripcion = 'projects/blablacar-412417/subscriptions/blablacar-sub'
 
 # Recibe datos
 def decode_message(msg):

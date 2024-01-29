@@ -117,18 +117,12 @@
         <name>Benicalap, Valencia</name>
         <styleUrl>#icon-1899-DB4436-nodesc</styleUrl>
         <Point>
-          <coordinates>
-            -0.3914029,39.4934032,0
-          </coordinates>
         </Point>
       </Placemark>
       <Placemark>
         <name>Alboraya</name>
         <styleUrl>#icon-1899-DB4436-nodesc</styleUrl>
         <Point>
-          <coordinates>
-            -0.3510397,39.4989346,0
-          </coordinates>
         </Point>
       </Placemark>
     </Folder>

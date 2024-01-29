@@ -112,7 +112,7 @@ def main():
 
         # Enviar el JSON a través de Pub/Sub
         pubsub_producer.publish_message(coordinates_json)
-        time.sleep(5)  # Esperar 5 segundos antes de procesar el siguiente archivo
+        time.sleep(10)  # Esperar 30 segundos antes de procesar el siguiente archivo
 
         print(f"JSON con la primera y última geolocalización de {kml_file} enviado a Pub/Sub.")
 

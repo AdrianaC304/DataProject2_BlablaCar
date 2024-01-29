@@ -107,7 +107,7 @@ def main():
         # Enviar coordenadas a través de Pub/Sub, seleccionando cada segunda coordenada
         for index, coord_message in enumerate(coordinates_json):
             pubsub_producer.publish_message(coord_message)
-            time.sleep(1)  # Esperar 1 segundo entre mensajes
+            time.sleep(3)  # Esperar 1 segundo entre mensajes
 
         print(f"Coordenadas alternas de {kml_file} han sido enviadas a Pub/Sub con ID de coche {coche_id_counter - 1}.")
 

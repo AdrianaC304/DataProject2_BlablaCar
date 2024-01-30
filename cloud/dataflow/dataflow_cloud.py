@@ -4,13 +4,14 @@ import logging
 from apache_beam.options.pipeline_options import PipelineOptions
 
 
-# Variables
+##################################################### Variables ##################################
 project_id = "woven-justice-411714"
-subscription_name = "edema_mda-sub"
+subscription_name = "blablacar_coche-sub"
 bq_dataset = "ejemplo"
-bq_table = "edem"
-# debe ser unico porque si no pueden acceder 
+bq_table = "coches"
+# Buenas prácticas debe ser unico porque si no pueden acceder 
 bucket_name = "woven-justice-411714"
+##################################################################################################
 
 def decode_message(msg):
 
@@ -24,7 +25,7 @@ def run():
     with beam.Pipeline(options=PipelineOptions(
         streaming=True,
         # save_main_session=True
-        job_name = "edem-dataflow",
+        job_name = "edem-dataflowc",
         project=project_id,
         runner="DataflowRunner",
         #donde guarda los archivos
@@ -36,9 +37,9 @@ def run():
             p
             | "ReadFromPubSub" >> beam.io.ReadFromPubSub(subscription=f'projects/{project_id}/subscriptions/{subscription_name}')
             | "decode msg" >> beam.Map(decode_message)
-            | "Write to BigQuery" >> beam.io.WriteToBigQuery(
+            | "ESCRIBIR" >> beam.io.WriteToBigQuery(
                 table = f"{project_id}:{bq_dataset}.{bq_table}", # Required Format: PROJECT_ID:DATASET.TABLE
-                schema='nombre:STRING', # Required Format: field:TYPE
+                schema='coche_id_message:STRING, coche_id: INTEGER , coche_index_msg: INTEGER, geo:STTRING, coche_latitud:FLOAT, coche_longitud:FLOAT, datetime: DATETIME, coche_ruta: STRING', # Required Format: field:TYPE
                 create_disposition=beam.io.BigQueryDisposition.CREATE_NEVER,
                 write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND
             )
@@ -53,3 +54,6 @@ if __name__ == '__main__':
 
     # Run Process
     run()
+
+
+        

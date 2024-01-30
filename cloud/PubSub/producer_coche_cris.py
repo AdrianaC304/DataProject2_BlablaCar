@@ -7,11 +7,11 @@ from datetime import datetime
 import uuid
 
 #################################################### Adriana ###################################################
-#project_id = 'woven-justice-411714'
-#topic_name= 'blablacar_coche'
+project_id = 'woven-justice-411714'
+topic_name= 'blablacar_coche'
 #################################################### Cris ######################################################
-project_id = 'dataflow-1-411618'
-topic_name= 'coches_stream'
+#project_id = 'dataflow-1-411618'
+#topic_name= 'coches_stream'
 ###################################################   Jesús   ###################################################
 #project_id = 'blablacar-412022'
 #topic_name = 'coches'
@@ -29,7 +29,8 @@ class PubSubProducer:
 
     def publish_message(self, message):
         # Agregar el campo 'datetime' al mensaje JSON
-        message['datetime'] = datetime.utcnow().isoformat() + 'Z'
+        #message['datetime'] = datetime.utcnow().isoformat() + 'Z'
+        message['datetime'] = datetime.utcnow().isoformat() 
         # Agregar el campo 'id_message' como un identificador único alfanumérico
         message['coche_id_message'] = str(uuid.uuid4())
         

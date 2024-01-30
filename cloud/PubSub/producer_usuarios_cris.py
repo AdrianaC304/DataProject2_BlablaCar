@@ -7,11 +7,11 @@ from datetime import datetime
 import uuid
 
 #################################################### Adriana ###################################################
-#project_id = 'woven-justice-411714'
-#topic_name= 'blablacar_coche'
+project_id_a = 'woven-justice-411714'
+topic_name_a = 'blablacar_usuarios'
 #################################################### Cris ######################################################
-project_id = 'dataflow-1-411618'
-topic_name= 'usuarios_stream'
+#project_id = 'dataflow-1-411618'
+#topic_name= 'usuarios_stream'
 ###################################################   Jesús   ###################################################
 #project_id = 'blablacar-412022'
 #topic_name = 'coches'
@@ -77,8 +77,8 @@ def convertir_a_json(coordinates, user_id, ruta_nombre):
 
 # Función principal
 def main():
-    project_id = 'dataflow-1-411618'
-    topic_name = 'usuarios_stream'
+    project_id = project_id_a
+    topic_name = topic_name_a
 
     # Directorio que contiene los archivos KML
     directory_path = './rutas/personas1/'

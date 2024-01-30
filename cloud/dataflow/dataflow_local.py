@@ -3,19 +3,19 @@ import logging
 import apache_beam as beam
 from apache_beam.runners.interactive.interactive_runner import InteractiveRunner
 import apache_beam.runners.interactive.interactive_beam as ib
+import json
+from apache_beam.options.pipeline_options import PipelineOptions
 
 
+############################################# Adriana ##################################
 # Variables
 project_id = "woven-justice-411714"
 subscription_name = "edema_mda-sub"
 bq_dataset = "ejemplo"
 bq_table = "edem"
-#bucket_name = "edem"
-#
-import apache_beam as beam
-import json
-import logging
-from apache_beam.options.pipeline_options import PipelineOptions
+######################################################################################
+
+
 
 def decode_message(msg):
 

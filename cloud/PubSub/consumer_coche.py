@@ -53,7 +53,7 @@ new_table_fields = [
     bigquery.TableFieldSchema(name='coche_id_message', type='STRING', mode='NULLABLE'),
     bigquery.TableFieldSchema(name='coche_id', type='INTEGER', mode='NULLABLE'),
     bigquery.TableFieldSchema(name='coche_index_msg', type='INTEGER', mode='NULLABLE'),
-     bigquery.TableFieldSchema(name='geo', type='STRING', mode='NULLABLE'),
+    bigquery.TableFieldSchema(name='geo', type='STRING', mode='NULLABLE'),
     bigquery.TableFieldSchema(name='coche_latitud', type='FLOAT', mode='NULLABLE'),
     bigquery.TableFieldSchema(name='coche_longitud', type='FLOAT', mode='NULLABLE'),
     bigquery.TableFieldSchema(name='datetime', type='datetime', mode='NULLABLE'),

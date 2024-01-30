@@ -29,6 +29,7 @@ class PubSubProducer:
 
     def publish_message(self, message):
         # Agregar el campo 'datetime' al mensaje JSON
+        # La z me da error
         #message['datetime'] = datetime.utcnow().isoformat() + 'Z'
         message['datetime'] = datetime.utcnow().isoformat() 
         # Agregar el campo 'id_message' como un identificador único alfanumérico

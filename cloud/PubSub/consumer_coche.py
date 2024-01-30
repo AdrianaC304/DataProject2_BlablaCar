@@ -19,11 +19,22 @@ suscripcion ='projects/woven-justice-411714/subscriptions/blablacar_coche-sub'
 #topic_name= 'coches'
 #table_name = 'dataflow-1-411618:blablacar.rutas'
 #suscripcion = 'projects/dataflow-1-411618/subscriptions/coches'
-################################################################################################################
+
+################################################# Jesus ######################################################
 #project_id = 'blablacar-412022'
 #topic_name= 'coches'
 #table_name = 'blablacar-412022.dataset.coches'
 #suscripcion = 'projects/blablacar-412022/subscriptions/coches-sub'
+
+
+##################################################### Variables ##################################
+project_id = "woven-justice-411714"
+subscription_name = "blablacar_coche-sub"
+bq_dataset = "ejemplo"
+bq_table = "coches"
+# Buenas prácticas debe ser unico porque si no pueden acceder 
+bucket_name = "woven-justice-411714"
+##################################################################################################
 
 
 # Recibe datos

@@ -29,7 +29,7 @@ class PubSubProducer:
 
     def publish_message(self, message):
         # Agregar el campo 'datetime' al mensaje JSON
-        message['datetime'] = datetime.utcnow().isoformat() + 'Z'
+        message['coche_datetime'] = datetime.utcnow().isoformat() + 'Z'
         # Agregar el campo 'id_message' como un identificador único alfanumérico
         message['coche_id_message'] = str(uuid.uuid4())
         
@@ -61,10 +61,10 @@ def convertir_a_json(coordinates, coche_id, ruta_nombre):
             'coche_id_message': None,
             'coche_id': coche_id,
             'coche_index_msg': index,
-            'geo': f"{lon}{lat}",
+            'coche_geo': f"{lon}{lat}",
             'coche_latitud': lon,
             'coche_longitud': lat,
-            'datetime': None, 
+            'coche_datetime': None, 
             'coche_ruta': ruta_nombre
         })
 

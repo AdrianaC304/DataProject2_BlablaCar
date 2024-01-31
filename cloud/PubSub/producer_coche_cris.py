@@ -7,11 +7,11 @@ from datetime import datetime
 import uuid
 
 #################################################### Adriana ###################################################
-#project_id = 'woven-justice-411714'
-#topic_name= 'blablacar_coche'
+project_id_a = 'woven-justice-411714'
+topic_name_a = 'blablacar_coches'
 #################################################### Cris ######################################################
-project_id = 'dataflow-1-411618'
-topic_name= 'coches_stream'
+#project_id = 'dataflow-1-411618'
+#topic_name= 'coches_stream'
 ###################################################   Jesús   ###################################################
 #project_id = 'blablacar-412022'
 #topic_name = 'coches'
@@ -22,14 +22,14 @@ topic_name= 'coches_stream'
 # Clase para la publicación en Pub/Sub
 class PubSubProducer:
     def __init__(self, project_id, topic_name):
-        self.project_id = project_id
-        self.topic_name = topic_name
+        self.project_id = project_id_a
+        self.topic_name = topic_name_a
         self.publisher = pubsub_v1.PublisherClient()
         self.topic_path = self.publisher.topic_path(self.project_id, self.topic_name)
 
     def publish_message(self, message):
         # Agregar el campo 'datetime' al mensaje JSON
-        message['coche_datetime'] = datetime.utcnow().isoformat() + 'Z'
+        message['coche_datetime'] = datetime.utcnow().isoformat() 
         # Agregar el campo 'id_message' como un identificador único alfanumérico
         message['coche_id_message'] = str(uuid.uuid4())
         
@@ -102,7 +102,7 @@ def main():
         coche_id_counter += 1
 
         # Crear una instancia de la clase PubSubProducer
-        pubsub_producer = PubSubProducer(project_id=project_id, topic_name=topic_name)
+        pubsub_producer = PubSubProducer(project_id=project_id_a, topic_name=topic_name_a)
 
         # Enviar coordenadas a través de Pub/Sub, seleccionando cada segunda coordenada
         for index, coord_message in enumerate(coordinates_json):

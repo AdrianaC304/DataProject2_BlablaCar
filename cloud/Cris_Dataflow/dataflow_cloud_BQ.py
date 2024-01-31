@@ -11,17 +11,13 @@ options = PipelineOptions(
     experiments='enable_streaming_engine,use_beam_bq_sink'
 )
 
-########################################## Cris #############################################
-# Definir suscripciones y otros detalles si es necesario
-#suscripcion_coche = 'projects/dataflow-1-411618/subscriptions/coches_stream-sub'
-#suscripcion_usuario = 'projects/dataflow-1-411618/subscriptions/usuarios_stream-sub'
-
 ##################################### Adri ##################################################
 suscripcion_coche = 'projects/woven-justice-411714/subscriptions/blablacar_coche-sub'
 suscripcion_usuario = 'projects/woven-justice-411714/subscriptions/blablacar_usuarios-sub'
 project_id = 'woven-justice-411714'
 bucket_name = "woven-justice-411714"
-
+table_id= 'asiganciones'
+dataset_id= 'ejemplo'
 
 
 ################################## Funciones #######################################
@@ -75,6 +71,38 @@ class FilterCoincidentCases_fin(beam.DoFn):
 
 
 
+
+
+
+################################ Funciones para BQ ################################
+
+
+# Define una función para convertir el diccionario a una cadena JSON
+def convert_to_json(element):
+    return json.dumps(element)
+
+# Define una función para seleccionar campos específicos de joined_data_inicio
+def select_fields(element):
+    return {
+        'geo': element['geo'],
+        'coche_id_message': element['coches'][0]['coche_id_message'],
+        'coche_id': element['coches'][0]['coche_id'],
+        'coche_index_msg': element['coches'][0]['coche_index_msg'],
+        'coche_latitud': element['coches'][0]['coche_latitud'],
+        'coche_longitud': element['coches'][0]['coche_longitud'],
+        'coche_datetime': element['coches'][0]['coche_datetime'],
+        'coche_ruta': element['coches'][0]['coche_ruta'],
+        'user_id_message': element['usuarios'][0]['user_id_message'],
+        'user_id': element['usuarios'][0]['user_id'],
+        'user_datetime': element['usuarios'][0]['user_datetime'],
+        'user_geo': element['usuarios'][0]['user_geo'],
+        'user_geo_fin': element['usuarios'][0]['user_geo_fin'],
+        'user_latitud_inicio': element['usuarios'][0]['user_latitud_inicio'],
+        'user_longitud_inicio': element['usuarios'][0]['user_longitud_inicio'],
+        'user_latitud_destino': element['usuarios'][0]['user_latitud_inicio'],
+        'user_longitud_destino': element['usuarios'][0]['user_longitud_inicio'],
+        'inicio_viaje': element['inicio_viaje'],
+    }
 ############### Pipeline #################################
 
 # Crear el pipeline
@@ -136,4 +164,21 @@ with beam.Pipeline(options=PipelineOptions(
         | "Filtrar_Casos_Coincidentes_fin" >> beam.ParDo(FilterCoincidentCases_fin())
         | "Filtrar_Solo_Coincidentes_fin" >> beam.Filter(lambda element: element['fin_viaje'])
         | "Imprimir_Resultados_fin" >> beam.Map(lambda element: print(element))
+    )
+
+
+# Aplicar la transformación para seleccionar campos específicos
+    selected_fields_inicio = (
+        joined_data_inicio
+        | "Seleccionar_Campos_inicio" >> beam.Map(select_fields)
+    )
+
+    # Escribir los resultados en BigQuery
+    selected_fields_inicio | "Convertir_a_JSON_inicio" >> beam.Map(convert_to_json) | "Escribir_en_BigQuery_inicio" >> beam.io.WriteToBigQuery(
+        table=table_id,
+        dataset=dataset_id,
+        project=project_id,
+        schema='geo:STRING,coche_id_message:STRING,coche_id:INTEGER,...',  # Ajusta el esquema según los campos seleccionados
+        create_disposition=beam.io.BigQueryDisposition.CREATE_IF_NEEDED,
+        write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND
     )

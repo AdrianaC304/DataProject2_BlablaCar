@@ -28,7 +28,7 @@ class PubSubProducer:
 
     def publish_message(self, message):
         # Agregar el campo 'datetime' al mensaje JSON
-        message['datetime'] = datetime.utcnow().isoformat() + 'Z'
+        message['user_datetime'] = datetime.utcnow().isoformat() + 'Z'
         # Agregar el campo 'id_message' como un identificador único alfanumérico
         message['user_id_message'] = str(uuid.uuid4())
         
@@ -64,8 +64,8 @@ def convertir_a_json(coordinates, user_id, ruta_nombre):
     json_data = {
         'user_id_message': None,
         'user_id': user_id,
-        'datetime': None,
-        'geo': f"{first_lon}{first_lat}",
+        'user_datetime': None,
+        'user_geo': f"{first_lon}{first_lat}",
         'user_geo_fin': f"{last_lon}{last_lat}",
         'user_latitud_inicio': first_lon,
         'user_longitud_inicio': first_lat,
@@ -112,7 +112,7 @@ def main():
 
         # Enviar el JSON a través de Pub/Sub
         pubsub_producer.publish_message(coordinates_json)
-        time.sleep(10)  # Esperar 30 segundos antes de procesar el siguiente archivo
+        time.sleep(30)  # Esperar 30 segundos antes de procesar el siguiente archivo
 
         print(f"JSON con la primera y última geolocalización de {kml_file} enviado a Pub/Sub.")
 

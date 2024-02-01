@@ -13,9 +13,9 @@ import random
 #topic_name= 'coches'
 #tabla_name = 'dataflow-1-411618.blablacar.rutas'
 #################################################### Jesús #####################################################
-project_id = 'xxx'
-topic_name= 'xxx'
-tabla_name = 'xxx'
+project_id = 'blablacar-412022'
+topic_name= 'coches'
+tabla_name = 'blablacar-412022.dataset.coches'
 
 
 
@@ -24,8 +24,14 @@ client = bigquery.Client()
 
 def leer_datos_bigquery(tabla):
     # Agrega comillas inversas alrededor del nombre de la tabla
-    query = f"SELECT coche_id, index_msg, longitud, latitud, datetime, ruta FROM `{tabla}` ORDER BY index_msg ASC "  
+    query = f"SELECT coche_id, index_msg, longitud, latitud, datetime, ruta FROM `{tabla_name}` ORDER BY index_msg ASC "  
     return client.query(query).to_dataframe()
+
+def coches_totales(tabla_coches_totales):
+    query = f"SELECT COUNT(DISTINCT coche_id) as coches_totales FROM `{tabla_name}`"
+
+def coches_dia(tabla_coches_dia):
+    query = f"SELECT DATE(datetime) as fecha, COUNT(DISTINCT coche_id) as coches_dia FROM `{tabla_name}` GROUP BY fecha"
 
 # Función para crear un mapa de Folium con la ruta y colores diferentes por coche_id
 def crear_mapa_folium(datos, ruta_seleccionada=None):

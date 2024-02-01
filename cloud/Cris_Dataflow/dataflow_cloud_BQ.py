@@ -113,17 +113,7 @@ new_table_schema.fields.extend(new_table_fields)
 
 
 # Crear el pipeline
-with beam.Pipeline(options=PipelineOptions(
-        streaming=True,
-        # save_main_session=True
-        job_name = "edem-bq",
-        project=project_id,
-        runner="DataflowRunner",
-        #donde guarda los archivos
-        temp_location=f"gs://{bucket_name}/tmp",
-        staging_location=f"gs://{bucket_name}/staging",
-        region="europe-west1"
-        )) as p:
+with beam.Pipeline(options=PipelineOptions(streaming=True)) as p:
     
     # Coches
     coches_data = (
@@ -202,7 +192,7 @@ with beam.Pipeline(options=PipelineOptions(
     )
 
     # Escribir los resultados en BigQuery
-    selected_fields_inicio | "Convertir_a_JSON_inicio" >> beam.Map(convert_to_json) | "Escribir_en_BigQuery_inicio" >> beam.io.WriteToBigQuery(
+    selected_fields_inicio | "Convertir_a_JSON_inicio" >> beam.Map(convert_to_json)  | "Escribir_en_BigQuery_inicio" >> beam.io.WriteToBigQuery(
         table=table_id,
         dataset=dataset_id,
         project=project_id,

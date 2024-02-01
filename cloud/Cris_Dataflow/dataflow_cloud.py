@@ -80,14 +80,14 @@ class FilterCoincidentCases_fin(beam.DoFn):
 # Crear el pipeline
 with beam.Pipeline(options=PipelineOptions(
         streaming=True,
-        # save_main_session=True
-        job_name = "edem-bq",
+        save_main_session=True,
+        job_name = "edem-test1",
         project=project_id,
         runner="DataflowRunner",
         #donde guarda los archivos
         temp_location=f"gs://{bucket_name}/tmp",
-        staging_location=f"gs://{bucket_name}/staging",
-        region="europe-west1"
+       staging_location=f"gs://{bucket_name}/staging",
+        region="europe-west4"
         )) as p:
     
     # Coches

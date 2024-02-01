@@ -2,6 +2,8 @@ import apache_beam as beam
 from apache_beam.options.pipeline_options import PipelineOptions, StandardOptions
 from apache_beam.transforms import CoGroupByKey
 import json
+from apache_beam.io.gcp.internal.clients import bigquery
+
 
 ################config################################
 
@@ -12,11 +14,11 @@ options = PipelineOptions(
 )
 
 ##################################### Adri ##################################################
-suscripcion_coche = 'projects/woven-justice-411714/subscriptions/blablacar_coche-sub'
+suscripcion_coche = 'projects/woven-justice-411714/subscriptions/blablacar_coches-sub'
 suscripcion_usuario = 'projects/woven-justice-411714/subscriptions/blablacar_usuarios-sub'
 project_id = 'woven-justice-411714'
 bucket_name = "woven-justice-411714"
-table_id= 'asiganciones'
+table_id= 'asignaciones'
 dataset_id= 'ejemplo'
 
 
@@ -74,42 +76,47 @@ class FilterCoincidentCases_fin(beam.DoFn):
 
 
 
-################################ Funciones para BQ ################################
-
+################################## Funciones para BQ #################################################
+######################################################################################################
 
 # Define una función para convertir el diccionario a una cadena JSON
 def convert_to_json(element):
     return json.dumps(element)
 
-# Define una función para seleccionar campos específicos de joined_data_inicio
-def select_fields(element):
-    return {
-        'geo': element['geo'],
-        'coche_id_message': element['coches'][0]['coche_id_message'],
-        'coche_id': element['coches'][0]['coche_id'],
-        'coche_index_msg': element['coches'][0]['coche_index_msg'],
-        'coche_latitud': element['coches'][0]['coche_latitud'],
-        'coche_longitud': element['coches'][0]['coche_longitud'],
-        'coche_datetime': element['coches'][0]['coche_datetime'],
-        'coche_ruta': element['coches'][0]['coche_ruta'],
-        'user_id_message': element['usuarios'][0]['user_id_message'],
-        'user_id': element['usuarios'][0]['user_id'],
-        'user_datetime': element['usuarios'][0]['user_datetime'],
-        'user_geo': element['usuarios'][0]['user_geo'],
-        'user_geo_fin': element['usuarios'][0]['user_geo_fin'],
-        'user_latitud_inicio': element['usuarios'][0]['user_latitud_inicio'],
-        'user_longitud_inicio': element['usuarios'][0]['user_longitud_inicio'],
-        'user_latitud_destino': element['usuarios'][0]['user_latitud_inicio'],
-        'user_longitud_destino': element['usuarios'][0]['user_longitud_inicio'],
-        'inicio_viaje': element['inicio_viaje'],
-    }
+
 ############### Pipeline #################################
+# Define el esquema de la tabla
+new_table_schema = bigquery.TableSchema()
+new_table_fields = [
+    bigquery.TableFieldSchema(name='geo', type='STRING', mode='NULLABLE'),
+    bigquery.TableFieldSchema(name='coche_id_message', type='STRING', mode='NULLABLE'),
+    bigquery.TableFieldSchema(name='coche_id', type='INTEGER', mode='NULLABLE'),
+    bigquery.TableFieldSchema(name='coche_index_msg', type='INTEGER', mode='NULLABLE'),
+    bigquery.TableFieldSchema(name='coche_geo', type='STRING', mode='NULLABLE'),
+    bigquery.TableFieldSchema(name='coche_latitud', type='FLOAT', mode='NULLABLE'),
+    bigquery.TableFieldSchema(name='coche_longitud', type='FLOAT', mode='NULLABLE'),
+    bigquery.TableFieldSchema(name='coche_datetime', type='DATETIME', mode='NULLABLE'),
+    bigquery.TableFieldSchema(name='coche_ruta', type='STRING', mode='NULLABLE'),
+    bigquery.TableFieldSchema(name='user_id_message', type='STRING', mode='NULLABLE'),
+    bigquery.TableFieldSchema(name='user_id', type='INTEGER', mode='NULLABLE'),
+    bigquery.TableFieldSchema(name='user_datetime', type='DATETIME', mode='NULLABLE'),
+    bigquery.TableFieldSchema(name='user_geo', type='STRING', mode='NULLABLE'),
+    bigquery.TableFieldSchema(name='user_geo_fin', type='STRING', mode='NULLABLE'),
+    bigquery.TableFieldSchema(name='user_latitud_inicio', type='FLOAT', mode='NULLABLE'),
+    bigquery.TableFieldSchema(name='user_longitud_inicio', type='FLOAT', mode='NULLABLE'),
+    bigquery.TableFieldSchema(name='user_latitud_destino', type='FLOAT', mode='NULLABLE'),
+    bigquery.TableFieldSchema(name='user_longitud_destino', type='FLOAT', mode='NULLABLE'),
+    bigquery.TableFieldSchema(name='inicio_viaje', type='BOOLEAN', mode='NULLABLE')
+]
+new_table_schema.fields.extend(new_table_fields)
+
+
 
 # Crear el pipeline
 with beam.Pipeline(options=PipelineOptions(
         streaming=True,
         # save_main_session=True
-        job_name = "edem-t",
+        job_name = "edem-bq",
         project=project_id,
         runner="DataflowRunner",
         #donde guarda los archivos
@@ -167,10 +174,31 @@ with beam.Pipeline(options=PipelineOptions(
     )
 
 
-# Aplicar la transformación para seleccionar campos específicos
+
+    # Seleccionar campos específicos de joined_data_inicio
     selected_fields_inicio = (
         joined_data_inicio
-        | "Seleccionar_Campos_inicio" >> beam.Map(select_fields)
+        | "Seleccionar_Campos_inicio" >> beam.Map(lambda element: {
+            'geo': element['geo'],
+            'coche_id_message': element['coches'][0]['coche_id_message'],
+            'coche_id': element['coches'][0]['coche_id'],
+            'coche_index_msg': element['coches'][0]['coche_index_msg'],
+            'coche_geo': element['coches'][0]['coche_geo'],
+            'coche_latitud': element['coches'][0]['coche_latitud'],
+            'coche_longitud': element['coches'][0]['coche_longitud'],
+            'coche_datetime': element['coches'][0]['coche_datetime'],
+            'coche_ruta': element['coches'][0]['coche_ruta'],
+            'user_id_message': element['usuarios'][0]['user_id_message'],
+            'user_id': element['usuarios'][0]['user_id'],
+            'user_datetime': element['usuarios'][0]['user_datetime'],
+            'user_geo': element['usuarios'][0]['user_geo'],
+            'user_geo_fin': element['usuarios'][0]['user_geo_fin'],
+            'user_latitud_inicio': element['usuarios'][0]['user_latitud_inicio'],
+            'user_longitud_inicio': element['usuarios'][0]['user_longitud_inicio'],
+            'user_latitud_destino': element['usuarios'][0]['user_latitud_destino'],
+            'user_longitud_destino': element['usuarios'][0]['user_longitud_destino'],
+            'inicio_viaje': element['inicio_viaje'],
+        })
     )
 
     # Escribir los resultados en BigQuery
@@ -178,7 +206,7 @@ with beam.Pipeline(options=PipelineOptions(
         table=table_id,
         dataset=dataset_id,
         project=project_id,
-        schema='geo:STRING,coche_id_message:STRING,coche_id:INTEGER,...',  # Ajusta el esquema según los campos seleccionados
+        schema=new_table_schema,  # Utiliza el esquema definido anteriormente
         create_disposition=beam.io.BigQueryDisposition.CREATE_IF_NEEDED,
         write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND
     )

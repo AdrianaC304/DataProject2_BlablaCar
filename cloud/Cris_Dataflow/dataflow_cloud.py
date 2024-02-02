@@ -17,10 +17,10 @@ options = PipelineOptions(
 #suscripcion_usuario = 'projects/dataflow-1-411618/subscriptions/usuarios_stream-sub'
 
 ##################################### Adri ##################################################
-suscripcion_coche = 'projects/woven-justice-411714/subscriptions/blablacar_coches-sub'
-suscripcion_usuario = 'projects/woven-justice-411714/subscriptions/blablacar_usuarios-sub'
-project_id = 'woven-justice-411714'
-bucket_name = "woven-justice-411714"
+suscripcion_coche_a = 'projects/woven-justice-411714/subscriptions/blablacar_coches2-sub'
+suscripcion_usuario_a = 'projects/woven-justice-411714/subscriptions/blablacar_usuarios2-sub'
+project_id_a= 'woven-justice-411714'
+bucket_name_a = 'woven-justice-411714'
 
 
 
@@ -81,19 +81,19 @@ class FilterCoincidentCases_fin(beam.DoFn):
 with beam.Pipeline(options=PipelineOptions(
         streaming=True,
         save_main_session=True,
-        job_name = "edem-test1",
-        project=project_id,
+        job_name = "edem-test4",
+        project=project_id_a,
         runner="DataflowRunner",
         #donde guarda los archivos
-        temp_location=f"gs://{bucket_name}/tmp",
-       staging_location=f"gs://{bucket_name}/staging",
+        temp_location=f"gs://{bucket_name_a}/tmp",
+       staging_location=f"gs://{bucket_name_a}/staging",
         region="europe-west4"
         )) as p:
     
     # Coches
     coches_data = (
         p
-        | "Coche_LeerDesdePubSub" >> beam.io.ReadFromPubSub(subscription=suscripcion_coche)
+        | "Coche_LeerDesdePubSub" >> beam.io.ReadFromPubSub(subscription=suscripcion_coche_a)
         | "Coche_decodificar_msg" >> beam.ParDo(DecodeMessage())
         | "Coche_Extraer_Clave_geo" >> beam.Map(extract_geo_coche)
         | "Coche_ventana_5_minutos" >> beam.WindowInto(beam.window.FixedWindows(500))
@@ -102,7 +102,7 @@ with beam.Pipeline(options=PipelineOptions(
     # Usuarios
     usuarios_data = (
         p
-        | "Usuario_LeerDesdePubSub" >> beam.io.ReadFromPubSub(subscription=suscripcion_usuario)
+        | "Usuario_LeerDesdePubSub" >> beam.io.ReadFromPubSub(subscription=suscripcion_usuario_a)
         | "Usuario_decodificar_msg" >> beam.ParDo(DecodeMessage())
         | "Usuario_ventana_5_minutos" >> beam.WindowInto(beam.window.FixedWindows(500))
     )

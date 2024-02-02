@@ -17,7 +17,7 @@ options = PipelineOptions(
 #suscripcion_usuario = 'projects/dataflow-1-411618/subscriptions/usuarios_stream-sub'
 
 ##################################### Adri ##################################################
-suscripcion_coche = 'projects/woven-justice-411714/subscriptions/blablacar_coche-sub'
+suscripcion_coche = 'projects/woven-justice-411714/subscriptions/blablacar_coches-sub'
 suscripcion_usuario = 'projects/woven-justice-411714/subscriptions/blablacar_usuarios-sub'
 project_id = 'woven-justice-411714'
 bucket_name = "woven-justice-411714"
@@ -80,14 +80,14 @@ class FilterCoincidentCases_fin(beam.DoFn):
 # Crear el pipeline
 with beam.Pipeline(options=PipelineOptions(
         streaming=True,
-        # save_main_session=True
-        job_name = "edem-t",
+        save_main_session=True,
+        job_name = "edem-test1",
         project=project_id,
         runner="DataflowRunner",
         #donde guarda los archivos
         temp_location=f"gs://{bucket_name}/tmp",
-        staging_location=f"gs://{bucket_name}/staging",
-        region="europe-west1"
+       staging_location=f"gs://{bucket_name}/staging",
+        region="europe-west4"
         )) as p:
     
     # Coches

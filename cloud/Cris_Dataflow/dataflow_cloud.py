@@ -17,8 +17,8 @@ options = PipelineOptions(
 #suscripcion_usuario = 'projects/dataflow-1-411618/subscriptions/usuarios_stream-sub'
 
 ##################################### Adri ##################################################
-suscripcion_coche_a = 'projects/woven-justice-411714/subscriptions/blablacar_coches2-sub'
-suscripcion_usuario_a = 'projects/woven-justice-411714/subscriptions/blablacar_usuarios2-sub'
+suscripcion_coche = 'projects/woven-justice-411714/subscriptions/blablacar_car-sub'
+suscripcion_usuario = 'projects/woven-justice-411714/subscriptions/blablacar_user-sub'
 project_id_a= 'woven-justice-411714'
 bucket_name_a = 'woven-justice-411714'
 
@@ -81,7 +81,7 @@ class FilterCoincidentCases_fin(beam.DoFn):
 with beam.Pipeline(options=PipelineOptions(
         streaming=True,
         save_main_session=True,
-        job_name = "edem-test4",
+        job_name = "edem-test6",
         project=project_id_a,
         runner="DataflowRunner",
         #donde guarda los archivos
@@ -93,7 +93,7 @@ with beam.Pipeline(options=PipelineOptions(
     # Coches
     coches_data = (
         p
-        | "Coche_LeerDesdePubSub" >> beam.io.ReadFromPubSub(subscription=suscripcion_coche_a)
+        | "Coche_LeerDesdePubSub" >> beam.io.ReadFromPubSub(subscription=suscripcion_coche)
         | "Coche_decodificar_msg" >> beam.ParDo(DecodeMessage())
         | "Coche_Extraer_Clave_geo" >> beam.Map(extract_geo_coche)
         | "Coche_ventana_5_minutos" >> beam.WindowInto(beam.window.FixedWindows(500))
@@ -102,7 +102,7 @@ with beam.Pipeline(options=PipelineOptions(
     # Usuarios
     usuarios_data = (
         p
-        | "Usuario_LeerDesdePubSub" >> beam.io.ReadFromPubSub(subscription=suscripcion_usuario_a)
+        | "Usuario_LeerDesdePubSub" >> beam.io.ReadFromPubSub(subscription=suscripcion_usuario)
         | "Usuario_decodificar_msg" >> beam.ParDo(DecodeMessage())
         | "Usuario_ventana_5_minutos" >> beam.WindowInto(beam.window.FixedWindows(500))
     )

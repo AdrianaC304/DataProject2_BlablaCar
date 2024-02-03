@@ -10,9 +10,9 @@ from datetime import datetime
 
 #################################################### Adriana ###################################################
 project_id = 'woven-justice-411714'
-topic_name= 'blablacar_coches2'
-table_name = "woven-justice-411714:ejemplo.coches"
-suscripcion ='projects/woven-justice-411714/subscriptions/blablacar_coches2-sub'
+topic_name= 'blablacar_coches3'
+table_name = "woven-justice-411714:<.coches"
+suscripcion ='projects/woven-justice-411714/subscriptions/blablacar_coches3-sub'
 
 #################################################### Cris ######################################################
 #project_id = 'dataflow-1-411618'

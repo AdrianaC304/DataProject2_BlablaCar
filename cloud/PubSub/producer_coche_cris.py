@@ -8,7 +8,7 @@ import uuid
 
 #################################################### Adriana ###################################################
 project_id = 'woven-justice-411714'
-topic_name = 'blablacar_car1'
+topic_name = 'blablacar_car'
 #################################################### Cris ######################################################
 #project_id = 'dataflow-1-411618'
 #topic_name= 'coches_stream'

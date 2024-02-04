@@ -17,8 +17,15 @@ project_id = 'blablacar-412022'
 topic_name= 'coches'
 tabla_name = 'blablacar-412022.dataset.coches'
 
+#Configuramos la página para que ocupe la anchura completa del navegador
+st.set_page_config(layout="wide")
+
+logo_url="https://user-images.githubusercontent.com/8149019/166203710-737d477f-c325-4417-8518-7b378918d1f1.png"
+st.image(logo_url, width=40)
 
 
+#Creamos dos pestañas para las distintas visualizaciones que necesitamos
+tab1, tab2 = st.tabs(["En directo", "Métricas"])
 
 client = bigquery.Client()
 
@@ -32,6 +39,8 @@ def coches_totales(tabla_coches_totales):
 
 def coches_dia(tabla_coches_dia):
     query = f"SELECT DATE(datetime) as fecha, COUNT(DISTINCT coche_id) as coches_dia FROM `{tabla_name}` GROUP BY fecha"
+
+
 
 # Función para crear un mapa de Folium con la ruta y colores diferentes por coche_id
 def crear_mapa_folium(datos, ruta_seleccionada=None):
@@ -49,7 +58,7 @@ def crear_mapa_folium(datos, ruta_seleccionada=None):
         center_coordinates = [39.4699, -0.3763]
 
     # Configuración del tamaño del mapa
-    map_width, map_height = 2000, 1200
+    map_width, map_height = 2300, 1200
 
     # Crear un mapa de Folium con un estilo simple y gris
     mapa_folium = folium.Map(location=center_coordinates, zoom_start=5, control_scale=True, width=map_width, height=map_height,  tiles='CartoDB positron')
@@ -96,13 +105,42 @@ if __name__ == "__main__":
     # Crea el mapa y la tabla filtrados por la ruta seleccionada
     mapa_folium = crear_mapa_folium(datos, ruta_seleccionada)
 
+     # Muestra el mapa en Streamlit
+    with tab1:
+        col1, col2  = st.columns([3, 1])
+        with col1:
+            st.subheader("Rutas en tiempo real")
+            folium_static(mapa_folium)
+ 
     # Muestra la tabla en Streamlit
-    st.title("Datos de BigQuery en Streamlit")
-    st.dataframe(datos[datos['ruta'] == ruta_seleccionada])
+        with col2:
+            st.subheader("Coches")
+            st.dataframe(datos[datos['ruta'] == ruta_seleccionada])
+            st.subheader("Pasajeros")
+            st.dataframe(datos[datos['ruta'] == ruta_seleccionada])
+            st.subheader("Pasajeros/coche")
+            st.dataframe(datos[datos['ruta'] == ruta_seleccionada])
+    
+    with tab2:
+        col1, col2, col3, col4 = st.columns([2, 1, 1, 1])
+        with col1:
+            st.subheader("Mapa de calor")
+            #Insertar código
+        with col2:
+            st.subheader("Pasajeros/Coche")
+            #Insertar código
+            st.subheader("Duración media")
+            #Insertar código
+        with col3:
+            st.subheader("Pasajeros/Día")
+            #Insertar código
+            st.subheader("Valoración media")
+            #Insertar código
+        with col4:
+            st.subheader("Coches/Día")
+            #Insertar código
 
-    # Muestra el mapa en Streamlit
-    st.title("Ruta en Mapa desde BigQuery con Folium")
-    folium_static(mapa_folium)
+
 
 # Pasajeros totales
     

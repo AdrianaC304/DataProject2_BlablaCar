@@ -1,0 +1,8 @@
+streamlit
+pandas
+altair
+plotly
+folium
+streamlit-folium
+db-dtypes
+Movingpandas

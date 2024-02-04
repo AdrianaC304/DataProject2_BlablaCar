@@ -32,6 +32,10 @@ def get_bigquery_data(project_id, dataset_id, table_id):
           usuario.user_datetime,
           usuario.user_geo,
           usuario.user_geo_fin,
+          usuario.user_latitud_inicio,
+          usuario.user_longitud_inicio,
+          usuario.user_latitud_destino,
+          usuario.user_longitud_destino,
           fin_viaje
         FROM
           `{project_id}.{dataset_id}.{table_id}`,
@@ -66,29 +70,38 @@ def main():
     # Crea un mapa centrado en Valencia
     mymap = folium.Map(location=valencia_center_coordinates, zoom_start=13)
     
-    route_coordinates = []
+    car_route_coordinates = []
+    user_route_coordinates = []
 
     while True:
         for i in range(len(df)):
-            latitud = float(df.loc[i, 'coche_latitud'])
-            longitud = float(df.loc[i, 'coche_longitud'])
+            car_latitud = float(df.loc[i, 'coche_latitud'])
+            car_longitud = float(df.loc[i, 'coche_longitud'])
+            car_route_coordinates.append([car_latitud, car_longitud])
             
-            icon = folium.Icon(color='red', icon='car', prefix='fa')
-            marker = folium.Marker(location=[latitud, longitud], popup=f"Vehicle ID: {df.loc[i, 'coche_id']}", icon=icon).add_to(mymap)
+            icon_car = folium.Icon(color='red', icon='car', prefix='fa')
+            marker_car = folium.Marker(location=[car_latitud, car_longitud], popup=f"Vehicle ID: {df.loc[i, 'coche_id']}", icon=icon_car).add_to(mymap)
             
-            # Añade la nueva coordenada a la ruta
-            route_coordinates.append([latitud, longitud])
+            user_latitud = float(df.loc[i, 'user_latitud_destino'])
+            user_longitud = float(df.loc[i, 'user_longitud_destino'])  
+            user_route_coordinates.append([user_latitud, user_longitud])
             
-            # Añade la nueva línea a la ruta
-            if len(route_coordinates) > 1:
-                folium.PolyLine(locations=route_coordinates[-2:], color='red').add_to(mymap) 
+            icon_user = folium.Icon(color='blue', icon='user', prefix='fa')
+            marker_user = folium.Marker(location=[user_latitud, user_longitud], popup=f"User ID: {df.loc[i, 'user_id']}", icon=icon_user).add_to(mymap)
+
+            # Añade las líneas de ruta después del bucle
+            if len(car_route_coordinates) > 1:
+                folium.PolyLine(locations=car_route_coordinates[-2:], color='red').add_to(mymap)
+
+            if len(user_route_coordinates) > 1:
+                folium.PolyLine(locations=user_route_coordinates[-2:], color='blue').add_to(mymap)
+        
 
             # Convierte el mapa de Folium a HTML y muestra el HTML directamente en Streamlit
             map_html = f'<iframe width="1000" height="500" src="data:text/html;base64,{base64.b64encode(mymap._repr_html_().encode()).decode()}" frameborder="0" allowfullscreen="true"></iframe>'
             map_container.markdown(map_html, unsafe_allow_html=True)
-            
+                
             time.sleep(4)
-    
     
 
 if __name__ == "__main__":

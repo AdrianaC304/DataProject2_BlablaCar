@@ -65,8 +65,6 @@ def main():
     
     # Crea un mapa centrado en Valencia
     mymap = folium.Map(location=valencia_center_coordinates, zoom_start=13)
-    
-    route_coordinates = []
 
     while True:
         for i in range(len(df)):
@@ -76,18 +74,13 @@ def main():
             icon = folium.Icon(color='red', icon='car', prefix='fa')
             marker = folium.Marker(location=[latitud, longitud], popup=f"Vehicle ID: {df.loc[i, 'coche_id']}", icon=icon).add_to(mymap)
             
-            # Añade la nueva coordenada a la ruta
-            route_coordinates.append([latitud, longitud])
-            
-            # Añade la nueva línea a la ruta
-            if len(route_coordinates) > 1:
-                folium.PolyLine(locations=route_coordinates[-2:], color='red').add_to(mymap) 
 
             # Convierte el mapa de Folium a HTML y muestra el HTML directamente en Streamlit
             map_html = f'<iframe width="1000" height="500" src="data:text/html;base64,{base64.b64encode(mymap._repr_html_().encode()).decode()}" frameborder="0" allowfullscreen="true"></iframe>'
             map_container.markdown(map_html, unsafe_allow_html=True)
-            
-            time.sleep(4)
+
+            # Espera 2 segundos antes de la próxima actualización
+            time.sleep(2)
     
     
 

@@ -65,7 +65,7 @@ class PubSubProducerModified(PubSubProducer):
     def publish_sorted_messages(self, df):
         for _, coord_message in df.iterrows():
             self.publish_message(coord_message.to_dict())
-            time.sleep(3)
+            time.sleep(5)
 
 def main():
     # Directorio que contiene los archivos KML

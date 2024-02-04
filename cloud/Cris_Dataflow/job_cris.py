@@ -40,19 +40,16 @@ class DecodeMessage(beam.DoFn):
 # Función para extraer la clave 'user_geo' de cada elemento para el inicio del viaje
 def extract_geo_user(element):
     geo = element.get('user_geo', None)
-    print(geo)
     return (geo, element)
 
 # Función para extraer la clave 'user_geo_fin' de cada elemento para el fin del viaje
 def extract_geo_fin(element):
     geo = element.get('user_geo_fin', None)
-    print(geo)
     return (geo, element)
 
 # Función para extraer la clave 'coche_geo' de cada elemento
 def extract_geo_coche(element):
     geo = element.get('coche_geo', None)
-    print(geo)
     return (geo, element)
 
 # Función para filtrar casos coincidentes y no coincidentes para el inicio del viaje
@@ -109,7 +106,6 @@ class BuildRowFn(beam.DoFn):
         row['inicio_viaje'] = element['inicio_viaje']
         
 
-        print(row)
         return [row]
 
 ##########fucncion_process_data_FIN############
@@ -142,7 +138,6 @@ class BuildRowFn_fin(beam.DoFn):
         row['fin_viaje'] = element['fin_viaje']
         
 
-        print(row)
         return [row]
     
 

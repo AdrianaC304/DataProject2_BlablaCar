@@ -7,9 +7,9 @@ from datetime import datetime
 
 #################################################### Adriana ###################################################
 project_id = 'woven-justice-411714'
-topic_name= 'blablacar_usuarios2'
+topic_name= 'blablacar_user'
 table_name = "woven-justice-411714:ejemplo.usuarios"
-suscripcion ='projects/woven-justice-411714/subscriptions/blablacar_usuarios2-sub'
+suscripcion ='projects/woven-justice-411714/subscriptions/blablacar_user-sub'
 
 
 

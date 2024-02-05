@@ -8,6 +8,8 @@ import random
 #################################################### Adriana ###################################################
 #project_id = 'woven-justice-411714'
 #topic_name= 'blablacar_DataProject2'
+#tabla_name = 'woven-justice-411714.ejemplo.coches'
+
 #################################################### Cris ######################################################
 #project_id = 'dataflow-1-411618'
 #topic_name= 'coches'

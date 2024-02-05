@@ -7,11 +7,11 @@ from datetime import datetime
 import uuid
 
 #################################################### Adriana ###################################################
-#project_id_a = 'woven-justice-411714'
-#topic_name_a  = 'blablacar_user'
+project_id = 'woven-justice-411714'
+topic_name  = 'blablacar_user'
 #################################################### Cris ######################################################
-project_id = 'dataflow-1-411618'
-topic_name= 'usuarios_stream'
+#project_id = 'dataflow-1-411618'
+#topic_name= 'usuarios_stream'
 ###################################################   Jesús   ###################################################
 #project_id = 'blablacar-412022'
 #topic_name = 'coches'

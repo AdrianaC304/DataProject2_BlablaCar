@@ -18,12 +18,10 @@ import plotly.express as px
 
 project_id_adri = 'woven-justice-411714'
 topic_name_adri = 'blablacar_DataProject2'
-tabla_name_coches = 'woven-justice-411714.ejemplo.coches'
+tabla_name_coche = 'woven-justice-411714.ejemplo.coches'
 tabla_name_usuarios= 'woven-justice-411714.ejemplo.usuarios'
-tabla_name = 'dataflow-1-411618.blablacar.asignaciones'
-
-
-
+tabla_name= 'dataflow-1-411618.blablacar.asignaciones'
+tabla_name_vehiculos = 'dataflow-1-411618.blablacar.vehiculos'
 
 
 ################################################### Configuramos la página para que ocupe la anchura completa del navegador ################################
@@ -36,20 +34,19 @@ st.image(logo_url, width=40)
 st.title("DASHBOARD BLABLACAR VALENCIA")
 st.write("Bienvenido al dashboard de BlaBlaCar para la ciudad de Valencia. Aquí podrás visualizar y analizar datos relacionados con viajes compartidos en la ciudad.")
 # Creamos dos pestañas para las distintas visualizaciones que necesitamos
-tab1, tab2, tab3, tab4 = st.tabs(["En directo", "Métricas", "Datos", "App"])
+tab1, tab2, tab3 , tab4 = st.tabs(["En directo", "Métricas", "BBDD", "Datos"])
 
 ################################################################################################################################################################
 client = bigquery.Client()
  
 def leer_datos_bigquery(tabla):
     # Agrega comillas inversas alrededor del nombre de la tabla
-    query = f"SELECT * FROM {tabla_name} ORDER BY coche_index_msg ASC "  
+    query = f"SELECT * FROM {tabla} ORDER BY coche_index_msg ASC "  
     return client.query(query).to_dataframe()
-
 
 def leer_datos_bigquery_coche(tabla_coche):
     # Agrega comillas inversas alrededor del nombre de la tabla
-    query = f"SELECT * FROM {tabla_name_coches} "  
+    query = f"SELECT * FROM {tabla_coche}"  
     return client.query(query).to_dataframe()
 
 def coches_totales(tabla_coches_totales):
@@ -57,6 +54,7 @@ def coches_totales(tabla_coches_totales):
 
 def coches_dia(tabla_coches_dia):
     query = f"SELECT DATE(datetime) as fecha, COUNT(DISTINCT coche_id) as coches_dia FROM `{tabla_name_coches}` GROUP BY fecha"
+
 
 # Función para crear un mapa de Folium con la ruta y colores diferentes por coche_id
 def crear_mapa_folium(datos, ruta_seleccionada=None):
@@ -106,34 +104,37 @@ def crear_mapa_folium(datos, ruta_seleccionada=None):
     return mapa_folium
 
 
+################################################################################################
+with tab4:
+    
+    # Muestra el mapa en Streamlit
+    st.write("Información adicional de los vehicculos:")
+
+    st.write("Información adicional de los usuarios:")
+
+  
+
 
 ################################################################################################
 
 
-#with tab3:
+with tab3:
 
-    #tabla_name_coches = 'woven-justice-411714.ejemplo.coches'
-    #nombre_tabla_usuarios = tabla_name_usuarios # Reemplaza con tu información real
-    # Lee los datos de BigQuery
-   # datos_coche = leer_datos_bigquery(tabla_name_coches)
-    #datos_usuarios = leer_datos_bigquery(nombre_tabla_usuarios)
-    
-    # Obtener la lista de rutas únicas
-    #rutas_unicas = datos_coche['coche_ruta'].unique()
+    datos = leer_datos_bigquery_coche(tabla_name_coche)
+    rutas_unicas = datos['coche_id'].unique()
     # Agregar un slicer (selectbox) para seleccionar la ruta
-    #ruta_seleccionada = st.selectbox("Selecciona una ruta:", rutas_unicas)
+    ruta_seleccionada = st.selectbox("Selecciona una ruta:", rutas_unicas)
     # Crea el mapa y la tabla filtrados por la ruta seleccionada
-    #mapa_folium = crear_mapa_folium(datos_coche, ruta_seleccionada)
-
+    mapa_folium = crear_mapa_folium(datos, ruta_seleccionada)
     # Muestra la tabla en Streamlit
-   # st.title("Datos de Rutas coches")
-    #st.dataframe(datos_coche[datos_coche['coche_ruta'] == ruta_seleccionada])
+    st.title("Datos de Rutas coches")
+    st.dataframe(datos[datos['coche_ruta'] == ruta_seleccionada])
    # st.title("Datos de usuarios")
    # st.dataframe(datos_usuarios)
 
     # Muestra el mapa en Streamlit
-    #st.title("Ruta en Folium")
-    #folium_static(mapa_folium)
+    st.title("Ruta en Folium")
+    folium_static(mapa_folium)
 
 
 
@@ -188,14 +189,24 @@ with tab2:
             #Insertar código
 
 
+
+with tab4:
+    
+    df = leer_datos_bigquery(tabla_name)
+
 ################################################################################################
     
 with tab1:
 
-    tabla_name = 'dataflow-1-411618.blablacar.asignaciones'
+    # Configura tus detalles de proyecto, conjunto de datos y tabla
+    project_id = 'dataflow-1-411618'
+    dataset_id = 'blablacar'
+    table_id = 'asignaciones'
+    #tabla_name = 'dataflow-1-411618.blablacar.asignaciones'
+
     # Recupera los datos de BigQuery
     df = leer_datos_bigquery(tabla_name)
-    #df2 = df[['coche_id','user_id','fin_viaje','inicio_viaje']]
+
     # Muestra el DataFrame en Streamlit
     st.write("Datos de BigQuery de asignaciones:")
     st.write(df)
@@ -207,37 +218,25 @@ with tab1:
     map_container = st.empty()
     # Crea un mapa centrado en Valencia
     mymap = folium.Map(location=valencia_center_coordinates, zoom_start=13)
-   
-
-    car_route_coordinates = []
-    user_route_coordinates = []
+    route_coordinates = []
 
     while True:
         for i in range(len(df)):
-            car_latitud = float(df.loc[i, 'coche_latitud'])
-            car_longitud = float(df.loc[i, 'coche_longitud'])
-            car_route_coordinates.append([car_latitud, car_longitud])
-            
-            icon_car = folium.Icon(color='red', icon='car', prefix='fa')
-            marker_car = folium.Marker(location=[car_latitud, car_longitud], popup=f"Vehicle ID: {df.loc[i, 'coche_id']}", icon=icon_car).add_to(mymap)
-            
-            user_latitud = float(df.loc[i, 'user_latitud_destino'])
-            user_longitud = float(df.loc[i, 'user_longitud_destino'])  
-            user_route_coordinates.append([user_latitud, user_longitud])
-            
-            icon_user = folium.Icon(color='blue', icon='user', prefix='fa')
-            marker_user = folium.Marker(location=[user_latitud, user_longitud], popup=f"User ID: {df.loc[i, 'user_id']}", icon=icon_user).add_to(mymap)
+            latitud = float(df.loc[i, 'coche_latitud'])
+            longitud = float(df.loc[i, 'coche_longitud'])
 
-            # Añade las líneas de ruta después del bucle
-            if len(car_route_coordinates) > 1:
-                folium.PolyLine(locations=car_route_coordinates[-2:], color='red').add_to(mymap)
+            icon = folium.Icon(color='red', icon='car', prefix='fa')
+            marker = folium.Marker(location=[latitud, longitud], popup=f"Vehicle ID: {df.loc[i, 'coche_id']}", icon=icon).add_to(mymap)
 
-            if len(user_route_coordinates) > 1:
-                folium.PolyLine(locations=user_route_coordinates[-2:], color='blue').add_to(mymap)
-        
+            # Añade la nueva coordenada a la ruta
+            route_coordinates.append([latitud, longitud])
+
+            # Añade la nueva línea a la ruta
+            if len(route_coordinates) > 1:
+                folium.PolyLine(locations=route_coordinates[-2:], color='red').add_to(mymap)
 
             # Convierte el mapa de Folium a HTML y muestra el HTML directamente en Streamlit
             map_html = f'<iframe width="1000" height="500" src="data:text/html;base64,{base64.b64encode(mymap._repr_html_().encode()).decode()}" frameborder="0" allowfullscreen="true"></iframe>'
             map_container.markdown(map_html, unsafe_allow_html=True)
-                
-            time.sleep(4)
+
+            time.sleep(1)

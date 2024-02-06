@@ -307,6 +307,7 @@ with tab4:
 
 ################################################################################################
 
+
 with tab1:
     # Configura tus detalles de proyecto, conjunto de datos y tabla
     project_id = 'dataflow-1-411618'
@@ -322,11 +323,12 @@ with tab1:
     col1, col2, col3 = st.columns(3)
     
     with col1:
-         st.metric(label="Total de Viajes Completados", value=df_filtrado_total_viajes, delta=None)
+        st.metric(label="Total de Viajes Completados", value=df_filtrado_total_viajes, delta=None)
         
     with col2:
         st.write("Ultimos Viajes Iniciados")
         st.write(df_filtrado)
+        
     with col3:
         st.write("Ultimos Viajes Finalizados")
         st.write(df_filtrado_fin)
@@ -341,49 +343,58 @@ with tab1:
    
     # Contenedor para el mapa
     map_container = st.empty()
-    # Crea un mapa centrado en Valencia con el estilo CartoDB Positron
-    mymap = folium.Map(location=valencia_center_coordinates, zoom_start=13, tiles='cartodbpositron')
    
-  # Diccionario para almacenar los marcadores de cada coche
-    car_markers = {}
 
+# Crear el mapa inicial
+mymap = folium.Map(location=valencia_center_coordinates, zoom_start=13, tiles='cartodbpositron')
+
+# Diccionario para almacenar los marcadores de coches
+car_markers = {}
+
+# Generadores para emitir las coordenadas de cada coche en el orden especificado
+car_coordinates_generators = {}
+
+# Inicializar los generadores para cada coche
+for car_id in df_coches['coche_id'].unique():
+    def get_car_coordinates(car_id):
+        for idx in df_coches[df_coches['coche_id'] == car_id]['coche_index_msg']:
+            car_latitud = float(df_coches[(df_coches['coche_id'] == car_id) & (df_coches['coche_index_msg'] == idx)]['coche_latitud'].iloc[0])
+            car_longitud = float(df_coches[(df_coches['coche_id'] == car_id) & (df_coches['coche_index_msg'] == idx)]['coche_longitud'].iloc[0])
+            yield car_latitud, car_longitud
+    car_coordinates_generators[car_id] = get_car_coordinates(car_id)
+
+def reset_generator(generator):
     while True:
-        # Limpiar el mapa antes de agregar nuevos marcadores
-        mymap = folium.Map(location=valencia_center_coordinates, zoom_start=13, tiles='cartodbpositron')
-
-        # Agregar marcadores de usuarios al mapa
-        for _, user_row in df_usuarios.iterrows():
-            user_latitud = float(user_row['user_latitud_inicio'])
-            user_longitud = float(user_row['user_longitud_inicio'])  
+        for value in generator:
+            yield value
             
-            icon_user = folium.Icon(color='blue', icon='user', prefix='fa')
-            marker_user = folium.Marker(location=[user_latitud, user_longitud], popup=f"User ID: {user_row['user_id']}", icon=icon_user).add_to(mymap)
-
-        # Actualizar marcadores de coches en el mapa
-        for _, car_row in df_coches.iterrows():
-            car_id = car_row['coche_id']
-            car_latitud = float(car_row['coche_latitud'])
-            car_longitud = float(car_row['coche_longitud'])
-
-            # Si el marcador del coche ya existe, actualizar su ubicación
-            if car_id in car_markers:
-                car_markers[car_id].location = [car_latitud, car_longitud]
-            # Si no existe, crear un nuevo marcador
-            else:
-                icon_car = folium.Icon(color='red', icon='car', prefix='fa')
-                marker_car = folium.Marker(location=[car_latitud, car_longitud], popup=f"Vehicle ID: {car_id}", icon=icon_car)
-                car_markers[car_id] = marker_car
-
-        # Agregar los marcadores de coches al mapa
-        for marker in car_markers.values():
-            marker.add_to(mymap)
-
-        # Convierte el mapa de Folium a HTML y muestra el HTML directamente en Streamlit
-        map_html = f'<div style="width: 100%;"><iframe width="100%" height="500" src="data:text/html;base64,{base64.b64encode(mymap._repr_html_().encode()).decode()}" frameborder="0" allowfullscreen="true"></iframe></div>'
-        map_container.markdown(map_html, unsafe_allow_html=True)
             
-        time.sleep(2)
+# Bucle principal para actualizar los marcadores de coches
+while True:
+    # Limpiar el mapa antes de agregar nuevos marcadores
+    mymap = folium.Map(location=valencia_center_coordinates, zoom_start=13, tiles='cartodbpositron')
 
+    # Agregar marcadores de usuarios al mapa
+    for _, user_row in df_usuarios.iterrows():
+        user_latitud = float(user_row['user_latitud_inicio'])
+        user_longitud = float(user_row['user_longitud_inicio'])  
         
+        icon_user = folium.Icon(color='blue', icon='user', prefix='fa')
+        marker_user = folium.Marker(location=[user_latitud, user_longitud], popup=f"User ID: {user_row['user_id']}, User Latitud: {user_latitud}, User Longitud: {user_longitud}", icon=icon_user).add_to(mymap)
+
+    # Obtener las coordenadas de cada coche y actualizar los marcadores en el mapa
+    for car_id, generator in car_coordinates_generators.items():
+        generator = reset_generator(generator)
+        car_latitud, car_longitud = next(generator)
+
+        # Actualizar marcador de coche en el mapa
+        icon_car = folium.Icon(color='red', icon='car', prefix='fa')
+        marker_car = folium.Marker(location=[car_latitud, car_longitud], popup=f"Vehicle ID: {car_id}, Car Latitud: {car_latitud}, Car Longitud: {car_longitud}, User Latitud: {user_latitud}, User Longitud: {user_longitud}", icon=icon_car)
+        marker_car.add_to(mymap)
+
+    # Convierte el mapa de Folium a HTML y muestra el HTML directamente en Streamlit
+    map_html = f'<div style="width: 100%;"><iframe width="100%" height="500" src="data:text/html;base64,{base64.b64encode(mymap._repr_html_().encode()).decode()}" frameborder="0" allowfullscreen="true"></iframe></div>'
+    map_container.markdown(map_html, unsafe_allow_html=True)
         
-        #tabla_rutas_usuarios
+    # Esperar 2 segundos antes de la próxima iteración
+    time.sleep(1)

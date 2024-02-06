@@ -5,21 +5,19 @@ from apache_beam.io.gcp.internal.clients import bigquery
 import json
 from datetime import datetime
 from apache_beam.transforms import CoGroupByKey
+from apache_beam.options.pipeline_options import GoogleCloudOptions
+
 
 ################config################################
 
-options = PipelineOptions(
-    streaming=True,
-    runner='DataflowRunner',
-    experiments='enable_streaming_engine,use_beam_bq_sink'
-)
-
-# Definir suscripciones y otros detalles si es necesario
-# Definir suscripciones y otros detalles si es necesario
-suscripcion_coche = 'projects/woven-justice-411714/subscriptions/coches_stream-sub'
-suscripcion_usuario = 'projects/woven-justice-411714/subscriptions/usuarios_stream-sub'
+#
+suscripcion_coche = 'projects/woven-justice-411714/subscriptions/blablacar_car_30-sub'
+suscripcion_usuario = 'projects/woven-justice-411714/subscriptions/blablacar_user_30-sub'
 project_id = 'woven-justice-411714'
 bucket_name = 'woven-justice-411714'
+
+
+
 
 #########funciones#######################################
 
@@ -34,19 +32,16 @@ class DecodeMessage(beam.DoFn):
 # Función para extraer la clave 'user_geo' de cada elemento para el inicio del viaje
 def extract_geo_user(element):
     geo = element.get('user_geo', None)
-    print(geo)
     return (geo, element)
 
 # Función para extraer la clave 'user_geo_fin' de cada elemento para el fin del viaje
 def extract_geo_fin(element):
     geo = element.get('user_geo_fin', None)
-    print(geo)
     return (geo, element)
 
 # Función para extraer la clave 'coche_geo' de cada elemento
 def extract_geo_coche(element):
     geo = element.get('coche_geo', None)
-    print(geo)
     return (geo, element)
 
 # Función para filtrar casos coincidentes y no coincidentes para el inicio del viaje
@@ -103,7 +98,6 @@ class BuildRowFn(beam.DoFn):
         row['inicio_viaje'] = element['inicio_viaje']
         
 
-        print(row)
         return [row]
 
 ##########fucncion_process_data_FIN############
@@ -136,7 +130,6 @@ class BuildRowFn_fin(beam.DoFn):
         row['fin_viaje'] = element['fin_viaje']
         
 
-        print(row)
         return [row]
     
 
@@ -146,31 +139,31 @@ class BuildRowFn_fin(beam.DoFn):
 
 with beam.Pipeline(options=PipelineOptions(
         streaming=True,
-        save_main_session=True,
-        job_name = "job-test3",
+        # save_main_session=True
+        job_name = "edem-dataflow",
         project=project_id,
         runner="DataflowRunner",
         #donde guarda los archivos
         temp_location=f"gs://{bucket_name}/tmp",
-       staging_location=f"gs://{bucket_name}/staging",
-        region="europe-west1"
-        )) as p:
-    
+        staging_location=f"gs://{bucket_name}/staging",
+        region="europe-west4"
+    )) as p: 
+
     # Coches
     coches_data = (
         p
-        | "Coche_LeerDesdePubSub" >> beam.io.ReadFromPubSub(subscription=suscripcion_coche)
+        | "Coche_LeerDesdePubSub" >> beam.io.ReadFromPubSub(subscription='projects/woven-justice-411714/subscriptions/blablacar_car_30-sub')
         | "Coche_decodificar_msg" >> beam.ParDo(DecodeMessage())
         | "Coche_Extraer_Clave_geo" >> beam.Map(extract_geo_coche)
-        | "Coche_ventana_5_minutos" >> beam.WindowInto(beam.window.FixedWindows(60))
+        | "Coche_ventana_5_minutos" >> beam.WindowInto(beam.window.FixedWindows(600))
     )
 
     # Usuarios
     usuarios_data = (
         p
-        | "Usuario_LeerDesdePubSub" >> beam.io.ReadFromPubSub(subscription=suscripcion_usuario)
+        | "Usuario_LeerDesdePubSub" >> beam.io.ReadFromPubSub(subscription='projects/woven-justice-411714/subscriptions/blablacar_user_30-sub')
         | "Usuario_decodificar_msg" >> beam.ParDo(DecodeMessage())
-        | "Usuario_ventana_5_minutos" >> beam.WindowInto(beam.window.FixedWindows(60))
+        | "Usuario_ventana_5_minutos" >> beam.WindowInto(beam.window.FixedWindows(600))
     )
 
     # Derivar dos flujos distintos para inicio y fin del viaje
@@ -213,4 +206,3 @@ with beam.Pipeline(options=PipelineOptions(
             write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND
         )
     )
-    

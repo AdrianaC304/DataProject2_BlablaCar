@@ -10,7 +10,11 @@ project_id = 'woven-justice-411714'
 topic_name= 'blablacar_user'
 table_name = "woven-justice-411714:ejemplo.usuarios"
 suscripcion ='projects/woven-justice-411714/subscriptions/blablacar_user-sub'
-
+#################################################### Cris ######################################################
+#project_id = 'dataflow-1-411618'
+#topic_name= 'coches'
+#table_name = 'dataflow-1-411618:blablacar.rutas'
+#suscripcion = 'projects/dataflow-1-411618/subscriptions/coches'
 
 
 # Recibe datos

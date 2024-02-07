@@ -12,11 +12,12 @@ import pandas as pd
 project_id = 'woven-justice-411714'
 topic_name  = 'blablacar_car'
 
-############################################################################################################### 
-
+##############################################Cris################################################################# 
 # Configuración de proyectos y temas
 #project_id = 'dataflow-1-411618'
 #topic_name= 'coches_stream'
+###############################################################################################################
+
 
 # Clase para la publicación en Pub/Sub
 class PubSubProducer:

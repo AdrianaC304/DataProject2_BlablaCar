@@ -21,11 +21,20 @@ Hemos utilizado las siguientes tecnologías para desarrollar y poner en marcha n
 - **Streamlit:** Utilizado para la creación de una interfaz de usuario interactiva y dinámica, que permite a los usuarios visualizar y explorar los datos de manera intuitiva.
 - **BigQuery:** Empleado como base de datos para almacenar y consultar los datos generados por nuestra aplicación, permitiendo un análisis rápido y escalable de grandes conjuntos de datos. 
 
-Este conjunto de tecnologías nos ha permitido desarrollar una solución robusta y eficiente para la implementación de nuestra plataforma de viajes compartidos en Valencia.
+![Stack](./imagenes/stack.png)
 
-## Arquitectura
+
+## Arquitectura Cloud
 
 ![Arquitectura](./imagenes/arquitectura_final.jpeg)
+
+
+
+## Modelo Relacional
+
+![Modelo](./imagenes/modelo_relacional.jpeg)
+
+
 
 ## Notas
 

@@ -397,4 +397,4 @@ while True:
     map_container.markdown(map_html, unsafe_allow_html=True)
         
     # Esperar 2 segundos antes de la próxima iteración
-    time.sleep(1)
+    time.sleep(2)

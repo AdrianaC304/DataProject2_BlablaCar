@@ -339,7 +339,7 @@ with tab1:
     st.write("Mapa interactivo")
    
     # Establece las coordenadas del centro de Valencia, España
-    valencia_center_coordinates = [39.4699, -0.3763]
+    valencia_center_coordinates = [39.44292, -0.36584]
    
     # Contenedor para el mapa
     map_container = st.empty()

@@ -4,6 +4,7 @@
   - [Introducción](#introducción)
   - [Caso expuesto](#caso-expuesto)
   - [Solución](#solución)
+  - [Stack Tecnológico](#stack-tecnológico)
   - [Aquitectura](#aquitectura)
   - [Notas](#notas)
 
@@ -18,6 +19,20 @@ La compañía BlaBlaCar ha tomado la decisión de implementar una plataforma ded
 ## Solución
 
 La herramienta propuesta consta de un sistema de asignacion de viajes que conecta usuarios con coches en tiempo real. Los usuarios determinan una ubicacion de origen y una de destino, mientras que los coches declaran su ruta o trayecto. La herramienta conecta a ambos si existe una coihcidencia entre la ruta declarada de los automovilistas, y el origen y destino introducidos por los usuarios. Todos los viajes son registrados en una base datos, sobre la cual montamos un dashboard que visualiza datos en streaming.
+
+## Stack Tecnológico
+
+Hemos utilizado las siguientes tecnologías para desarrollar y poner en marcha nuestra solución:
+
+- **Pub/Sub:** Utilizado para la gestión de mensajes en tiempo real, permitiendo la comunicación entre los distintos componentes de nuestra aplicación de manera eficiente y escalable.
+
+- **Dataflow:** Empleado para el procesamiento de datos en tiempo real, permitiendo el análisis y la transformación de los datos de manera continua y en grandes volúmenes.
+
+- **Streamlit:** Utilizado para la creación de una interfaz de usuario interactiva y dinámica, que permite a los usuarios visualizar y explorar los datos de manera intuitiva.
+
+- **BigQuery:** Empleado como base de datos para almacenar y consultar los datos generados por nuestra aplicación, permitiendo un análisis rápido y escalable de grandes conjuntos de datos.
+
+Este conjunto de tecnologías nos ha permitido desarrollar una solución robusta y eficiente para la implementación de nuestra plataforma de viajes compartidos en Valencia.
 
 
 ## Aquitectura

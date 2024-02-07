@@ -418,4 +418,4 @@ if hash_ingresado == contrasena_guardada:
 
     ################################################################################################
 else:
-    st.write("Contraseña incorrecta, matao.")
+    st.write("Contraseña incorrecta.")

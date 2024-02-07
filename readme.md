@@ -1,9 +1,7 @@
 # Data Project 2
 
-## Índice
-
+Índice
 - [Data Project 2](#data-project-2)
-  - [Índice](#índice)
   - [Introducción](#introducción)
   - [Explicacion repositorio](#explicacion-repositorio)
   - [Caso expuesto](#caso-expuesto)

@@ -23,6 +23,16 @@ tabla_name = 'dataflow-1-411618.blablacar.asignaciones'
 tabla_name_vehiculos = 'dataflow-1-411618.blablacar.vehiculos'
 tabla_name_vehiculo_info = 'dataflow-1-411618.blablacar.usuarios'
 
+project_id_adri = 'woven-justice-411714'
+topic_name_adri = 'blablacar_DataProject2'
+tabla_name_coche = 'woven-justice-411714.ejemplo.coches'
+tabla_name_usuarios= 'woven-justice-411714.ejemplo.usuarios'
+tabla_name = 'dataflow-1-411618.blablacar.asignaciones'
+tabla_rutas_usuarios = 'dataflow-1-411618.blablacar.rutas_usuarios'
+tabla_rutas_coches= 'dataflow-1-411618.blablacar.rutas_coches'
+tabla_name_vehiculos = 'dataflow-1-411618.blablacar.vehiculos'
+tabla_name_vehiculo_info = 'dataflow-1-411618.blablacar.usuarios'
+
 
 
 ################################################### Configuramos la página para que ocupe la anchura completa del navegador ################################
@@ -63,7 +73,22 @@ if hash_ingresado == contrasena_guardada:
     ################################################################ Funciones SQL #################################################################################
     ################################################################################################################################################################
 
-
+    def leer_datos_bigquery_user(tabla):
+            # Agrega comillas inversas alrededor del nombre de la tabla
+            query = f"SELECT * FROM {tabla}"  
+            return client.query(query).to_dataframe()
+        
+    def leer_datos_bigquery_filtrado_fin(tabla):
+        # Agrega comillas inversas alrededor del nombre de la tabla
+        query = f"""
+            SELECT coche_id, MAX(coche_datetime) AS coche_datetime, user_id, fin_viaje 
+            FROM {tabla} 
+            WHERE fin_viaje = True 
+            GROUP BY coche_id, user_id, fin_viaje 
+            ORDER BY user_id ASC
+        """
+        return client.query(query).to_dataframe()
+    
     def leer_datos_bigquery(tabla):
         # Agrega comillas inversas alrededor del nombre de la tabla
         query = f"SELECT * FROM {tabla} ORDER BY coche_index_msg ASC "  
@@ -71,7 +96,7 @@ if hash_ingresado == contrasena_guardada:
 
     def leer_datos_bigquery_filtrado(tabla):
         # Agrega comillas inversas alrededor del nombre de la tabla
-        query = f"SELECT coche_id,coche_datetime,user_id,inicio_viaje,fin_viaje FROM {tabla} ORDER BY coche_datetime ASC "  
+        query = f"SELECT coche_id,coche_datetime,user_id,inicio_viaje FROM {tabla} ORDER BY coche_datetime ASC "  
         return client.query(query).to_dataframe()
 
 
@@ -88,7 +113,15 @@ if hash_ingresado == contrasena_guardada:
         query = f"SELECT DATE(coche_datetime) as fecha, COUNT(DISTINCT coche_id) as coches_dia FROM `{tabla_coches_dia}` GROUP BY fecha"
         return client.query(query).to_dataframe()
 
-
+    def total_viajes(tabla):
+        # Agrega comillas inversas alrededor del nombre de la tabla
+        query = f"""
+            SELECT COUNT(*) AS total_viajes
+            FROM {tabla} 
+            WHERE inicio_viaje = True
+        """
+        return client.query(query).to_dataframe().iloc[0, 0]
+    
     def coches_total_viaje(tabla):
         query = f"SELECT coche_id, COUNT(user_id) as total_viajes FROM `{tabla}` GROUP BY coche_id;"
         return client.query(query).to_dataframe()
@@ -123,7 +156,6 @@ if hash_ingresado == contrasena_guardada:
         ROUND((SUM(CASE WHEN asignaciones.fin_viaje THEN asignaciones.coche_index_msg ELSE 0 END) - 
         SUM(CASE WHEN asignaciones.inicio_viaje THEN asignaciones.coche_index_msg ELSE 0 END)) * 0.35, 1) as importe_euros
         FROM `{tabla_asignaciones}` as asignaciones
-        WHERE DATE(asignaciones.user_datetime) = CURRENT_DATE()
         GROUP BY asignaciones.user_id
         order by importe_euros;
         """
@@ -246,9 +278,6 @@ if hash_ingresado == contrasena_guardada:
         st.dataframe(datos[datos['coche_id'] == ruta_seleccionada])
         #st.dataframe(datos)
 
-        # Muestra el mapa en Streamlit
-        st.write("Ruta en Folium")
-        folium_static(mapa_folium)
 
 
 
@@ -297,60 +326,98 @@ if hash_ingresado == contrasena_guardada:
 
     ################################################################################################
         
-    with tab1:
-        # Configura tus detalles de proyecto, conjunto de datos y tabla
-        project_id = 'dataflow-1-411618'
-        dataset_id = 'blablacar'
-        table_id = 'asignaciones'
 
-        df_filtrado = leer_datos_bigquery_filtrado(tabla_name)
-        # Muestra el DataFrame en Streamlit
-        st.write("Datos de BigQuery de asignaciones:")
-        st.write(df_filtrado)
+        with tab1:
+            # Configura tus detalles de proyecto, conjunto de datos y tabla
+            project_id = 'dataflow-1-411618'
+            dataset_id = 'blablacar'
+            table_id = 'asignaciones'
 
-        # Recupera los datos de BigQuery
-        df = leer_datos_bigquery(tabla_name)
-        st.write("Mapa interactivo")
-    
-        # Establece las coordenadas del centro de Valencia, España
-        valencia_center_coordinates = [39.4699, -0.3763]
-    
-        # Contenedor para el mapa
-        map_container = st.empty()
-        # Crea un mapa centrado en Valencia
-        mymap = folium.Map(location=valencia_center_coordinates, zoom_start=13)
-    
-        car_route_coordinates = []
-        user_route_coordinates = []
-
-        while True:
-            for i in range(len(df)):
-                car_latitud = float(df.loc[i, 'coche_latitud'])
-                car_longitud = float(df.loc[i, 'coche_longitud'])
-                car_route_coordinates.append([car_latitud, car_longitud])
-                
-                icon_car = folium.Icon(color='red', icon='car', prefix='fa')
-                marker_car = folium.Marker(location=[car_latitud, car_longitud], popup=f"Vehicle ID: {df.loc[i, 'coche_id']}", icon=icon_car).add_to(mymap)
-                
-                user_latitud = float(df.loc[i, 'user_latitud_destino'])
-                user_longitud = float(df.loc[i, 'user_longitud_destino'])  
-                user_route_coordinates.append([user_latitud, user_longitud])
-                
-                icon_user = folium.Icon(color='blue', icon='user', prefix='fa')
-                marker_user = folium.Marker(location=[user_latitud, user_longitud], popup=f"User ID: {df.loc[i, 'user_id']}", icon=icon_user).add_to(mymap)
-
-                # Añade las líneas de ruta después del bucle
-                if len(car_route_coordinates) > 1:
-                    folium.PolyLine(locations=car_route_coordinates[-2:], color='red').add_to(mymap)
-
-                if len(user_route_coordinates) > 1:
-                    folium.PolyLine(locations=user_route_coordinates[-2:], color='blue').add_to(mymap)
+            # Recupera los datos de BigQuery
+            df_filtrado = leer_datos_bigquery_filtrado(tabla_name)
+            df_filtrado_fin = leer_datos_bigquery_filtrado_fin(tabla_name)
+            df_filtrado_total_viajes = total_viajes(tabla_name)
             
+            # Muestra los DataFrames uno al lado del otro
+            col1, col2, col3 = st.columns(3)
+            
+            with col1:
+                st.metric(label="Total de Viajes Completados", value=df_filtrado_total_viajes, delta=None)
+                
+            with col2:
+                st.write("Ultimos Viajes Iniciados")
+                st.write(df_filtrado)
+                
+            with col3:
+                st.write("Ultimos Viajes Finalizados")
+                st.write(df_filtrado_fin)
 
-                # Convierte el mapa de Folium a HTML y muestra el HTML directamente en Streamlit
-                map_html = f'<iframe width="1000" height="500" src="data:text/html;base64,{base64.b64encode(mymap._repr_html_().encode()).decode()}" frameborder="0" allowfullscreen="true"></iframe>'
-                map_container.markdown(map_html, unsafe_allow_html=True)
-                    
-                time.sleep(1)
+            # Recupera los datos de BigQuery
+            df_usuarios = leer_datos_bigquery_user(tabla_rutas_usuarios)
+            df_coches =  leer_datos_bigquery(tabla_rutas_coches)
+            st.write("Mapa interactivo")
+        
+            # Establece las coordenadas del centro de Valencia, España
+            valencia_center_coordinates = [39.44292, -0.36584]
+        
+            # Contenedor para el mapa
+            map_container = st.empty()
+    
+
+    # Crear el mapa inicial
+    mymap = folium.Map(location=valencia_center_coordinates, zoom_start=13, tiles='cartodbpositron')
+
+    # Diccionario para almacenar los marcadores de coches
+    car_markers = {}
+
+    # Generadores para emitir las coordenadas de cada coche en el orden especificado
+    car_coordinates_generators = {}
+
+    # Inicializar los generadores para cada coche
+    for car_id in df_coches['coche_id'].unique():
+        def get_car_coordinates(car_id):
+            for idx in df_coches[df_coches['coche_id'] == car_id]['coche_index_msg']:
+                car_latitud = float(df_coches[(df_coches['coche_id'] == car_id) & (df_coches['coche_index_msg'] == idx)]['coche_latitud'].iloc[0])
+                car_longitud = float(df_coches[(df_coches['coche_id'] == car_id) & (df_coches['coche_index_msg'] == idx)]['coche_longitud'].iloc[0])
+                yield car_latitud, car_longitud
+        car_coordinates_generators[car_id] = get_car_coordinates(car_id)
+
+    def reset_generator(generator):
+        while True:
+            for value in generator:
+                yield value
+                
+                
+    # Bucle principal para actualizar los marcadores de coches
+    while True:
+        # Limpiar el mapa antes de agregar nuevos marcadores
+        mymap = folium.Map(location=valencia_center_coordinates, zoom_start=13, tiles='cartodbpositron')
+
+        # Agregar marcadores de usuarios al mapa
+        for _, user_row in df_usuarios.iterrows():
+            user_latitud = float(user_row['user_latitud_inicio'])
+            user_longitud = float(user_row['user_longitud_inicio'])  
+            
+            icon_user = folium.Icon(color='blue', icon='user', prefix='fa')
+            marker_user = folium.Marker(location=[user_latitud, user_longitud], popup=f"User ID: {user_row['user_id']}, User Latitud: {user_latitud}, User Longitud: {user_longitud}", icon=icon_user).add_to(mymap)
+
+        # Obtener las coordenadas de cada coche y actualizar los marcadores en el mapa
+        for car_id, generator in car_coordinates_generators.items():
+            generator = reset_generator(generator)
+            car_latitud, car_longitud = next(generator)
+
+            # Actualizar marcador de coche en el mapa
+            icon_car = folium.Icon(color='red', icon='car', prefix='fa')
+            marker_car = folium.Marker(location=[car_latitud, car_longitud], popup=f"Vehicle ID: {car_id}, Car Latitud: {car_latitud}, Car Longitud: {car_longitud}, User Latitud: {user_latitud}, User Longitud: {user_longitud}", icon=icon_car)
+            marker_car.add_to(mymap)
+
+        # Convierte el mapa de Folium a HTML y muestra el HTML directamente en Streamlit
+        map_html = f'<div style="width: 100%;"><iframe width="100%" height="500" src="data:text/html;base64,{base64.b64encode(mymap._repr_html_().encode()).decode()}" frameborder="0" allowfullscreen="true"></iframe></div>'
+        map_container.markdown(map_html, unsafe_allow_html=True)
+            
+        # Esperar 2 segundos antes de la próxima iteración
+        time.sleep(2)
+
+               
 else:
     st.write("Contraseña incorrecta. Por favor, ingresa la contraseña de nuevo para acceder a las pestañas.")

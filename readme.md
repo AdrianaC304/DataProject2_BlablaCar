@@ -1,9 +1,7 @@
 # Data Project 2
 
-## Índice
-
+Índice
 - [Data Project 2](#data-project-2)
-  - [Índice](#índice)
   - [Introducción](#introducción)
   - [Explicacion repositorio](#explicacion-repositorio)
   - [Caso expuesto](#caso-expuesto)
@@ -28,6 +26,3 @@ La compañía BlaBlaCar ha tomado la decisión de implementar una plataforma ded
 ![Texto alternativo](./imagenes/arquitectura_final.png)
 
 
-<center>
-    <img src="./imagenes/arquitectura_final.png" alt="Texto alternativo" width="300" height="200"/>
-</center>

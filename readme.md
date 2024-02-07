@@ -12,6 +12,8 @@ La compañía BlaBlaCar ha tomado la decisión de implementar una plataforma ded
 
 La herramienta propuesta consta de un sistema de asignación de viajes que conecta usuarios con coches en tiempo real. Los usuarios determinan una ubicación de origen y una de destino, mientras que los coches declaran su ruta o trayecto. La herramienta conecta a ambos si existe una coincidencia entre la ruta declarada de los automovilistas y el origen y destino introducidos por los usuarios. Todos los viajes son registrados en una base de datos, sobre la cual montamos un dashboard que visualiza datos en streaming.
 
+![Stack](./imagenes/solucion.png)
+
 ## Stack Tecnológico
 
 Hemos utilizado las siguientes tecnologías para desarrollar y poner en marcha nuestra solución:

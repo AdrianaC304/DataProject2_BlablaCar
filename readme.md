@@ -32,8 +32,14 @@ Hemos utilizado las siguientes tecnologías para desarrollar y poner en marcha n
 
 ## Modelo Relacional
 
-![Modelo](./imagenes/modelo_relacional.jpeg)
+![Modelo](./imagenes/modelo_relacional.png)
 
+
+
+
+## Dashboard
+
+![Modelo](./imagenes/dashboard.png)
 
 
 ## Notas

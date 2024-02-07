@@ -19,4 +19,4 @@ La compañía BlaBlaCar ha tomado la decisión de implementar una plataforma ded
 
 # Aquitectura
 
-![Texto alternativo](./imagenes/arquitectura_final.jpg)
+![Texto alternativo](./imagenes/arquitectura_final.png)

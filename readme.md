@@ -44,6 +44,4 @@ Hemos utilizado las siguientes tecnologías para desarrollar y poner en marcha n
 ![Modelo](./imagenes/dashboard.png)
 
 
-## Notas
 
-A primera vista, identificamos tres carpetas. La primera es "cloud", que alberga todo nuestro proyecto. La carpeta "images" contiene las imágenes que necesitamos. Por último, la carpeta "additional" no contiene nada que queramos que se evalúe.

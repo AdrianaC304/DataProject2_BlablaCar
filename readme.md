@@ -1,6 +1,3 @@
-# ValenStream: Real-Time shared travel platform in Valencia
-
-
 ## Introducción
 
 Este es el repositorio relativo al 2 Data Project del Máster de Data Analytics de la promoción 2023-24. El grupo está compuesto por Jackeline Romero, Adriana Campos, Cristian Marty, Jesús Jornet y Mar Pons.
